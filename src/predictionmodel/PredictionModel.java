@@ -18,14 +18,12 @@ public class PredictionModel {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        final String title = args[0];
         SwingUtilities.invokeLater(new Runnable() {
-   
         @Override
         public void run() {
-            //CartesianFrame frame = new CartesianFrame();
-            //frame.showUI();
-            SignalOptions sO = new SignalOptions();
-            sO.showUI();
+            CartesianFrame frame = new CartesianFrame(title);
+            frame.showUI();
         }
              });
     }

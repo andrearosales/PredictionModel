@@ -20,11 +20,11 @@ import javax.swing.JScrollPane;
  * @author aRosales
  */
 class CartesianFrame extends JFrame{
-    private ArrayList<String> signals;
     
-    public CartesianFrame(ArrayList<String> options) {
-        signals = options;
-        setSize(1000, 800);
+    private CartesianPanel results;
+    
+    public CartesianFrame(String signalTitle) {
+        setSize(1000, 600);
         //setLayout(new GridLayout(1,2));
         
         //
@@ -37,45 +37,48 @@ class CartesianFrame extends JFrame{
             labelTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
             add(labelTitle);
             
-            //Adding each separate container
-            BigPanel bigPanel = new BigPanel(options, labelTitle.getHeight());
-            bigPanel.setLayout(new BoxLayout(bigPanel, BoxLayout.Y_AXIS));
+            Container container = new Container();
+            container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
             
-            for(int i=0; i<signals.size(); i++){
-                String selected = signals.get(i);
-                Container container = new Container();
-                container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
-                
-                JLabel title = new JLabel();
-                title.setAlignmentX(Component.CENTER_ALIGNMENT);
-                
-                CartesianPanel panel = new CartesianPanel();
-                panel.setAlignmentX(Component.LEFT_ALIGNMENT);
-                panel.setBackground(Color.WHITE);
-                
-                if(selected.equalsIgnoreCase("HR")){
-                    title.setText("Heart rate (HR)");
-                    panel.setAxes("HR", 58, 164, Color.RED, 2.5);
-                }
-                else if(selected.equalsIgnoreCase("VO2")){
-                    title.setText("Oxygen consumption (VO2)");
-                    panel.setAxes("VO2(computed)", 0, 2, Color.BLUE, 2.5);
-                }
-                
-                container.add(title);
-                JScrollPane scroll = new JScrollPane(panel);
-                container.add(scroll);
-                bigPanel.add(container);
-            }
+            JLabel title = new JLabel();
+            title.setAlignmentX(Component.CENTER_ALIGNMENT);
+            title.setText(signalTitle);
             
-            JScrollPane bigScrollPanel = new JScrollPane(bigPanel);
-            add(bigScrollPanel);
-        
+            results = new CartesianPanel();
+            results.setAlignmentX(Component.LEFT_ALIGNMENT);
+            results.setBackground(Color.WHITE);
+            results.setAxes("HR", 58, 164, Color.BLUE, 2.5);
+            
+            container.add(title);
+            JScrollPane scroll = new JScrollPane(results);
+            container.add(scroll);
+            
+            add(container);
+            
+            JLabel plusMAE = new JLabel();
+            plusMAE.setAlignmentX(Component.CENTER_ALIGNMENT);
+            plusMAE.setText("AVG_SIGNAL + MAE");
+            plusMAE.setForeground(Color.RED);
+            
+            JLabel avg = new JLabel();
+            avg.setAlignmentX(Component.CENTER_ALIGNMENT);
+            avg.setText("AVG_SIGNAL");
+            avg.setForeground(Color.BLUE);
+            
+            JLabel minusMAE = new JLabel();
+            minusMAE.setAlignmentX(Component.CENTER_ALIGNMENT);
+            minusMAE.setText("AVG_SIGNAL - MAE");
+            minusMAE.setForeground(Color.GREEN);
+            
+            add(plusMAE);
+            add(avg);
+            add(minusMAE);
     }
+
     
     public void showUI() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setTitle("Prediction Data");
+        setTitle("Prediction Results");
         //pack();
         
         setVisible(true);
