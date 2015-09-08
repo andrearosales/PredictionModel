@@ -9,7 +9,6 @@ package predictionmodel;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
-import java.util.ArrayList;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;

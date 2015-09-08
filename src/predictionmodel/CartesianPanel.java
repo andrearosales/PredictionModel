@@ -21,19 +21,12 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import javax.swing.JPanel;
 import javax.swing.Timer;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
 
 
 /**
@@ -68,19 +61,16 @@ class CartesianPanel extends JPanel implements ActionListener{
     
     //added by me
     private double counter;
-    private int counterTop;
     private ArrayList<Point2D.Double> listPoints;
     private ArrayList<Point2D.Double> listErrorPlus;
     private ArrayList<Point2D.Double> listErrorMinus;
     private String dataY;
-    private boolean finish;
     private int columnAVG;
     private final int xCoordNumbers = 15;
     private final int yCoordNumbers = 10;
     private int yMinimum;
     private int yMaximum;
     private Color titleColor;
-    private int cicle;
     private int xLength;
     private double predictionError;
     
@@ -100,9 +90,6 @@ class CartesianPanel extends JPanel implements ActionListener{
         xLength = (X_AXIS_SECOND_X_COORD - X_AXIS_FIRST_X_COORD)
                 / xCoordNumbers;
         counter=0;
-        counterTop=0;
-        cicle=0;
-        finish=false;
         listPoints = new ArrayList<>();
         Point2D.Double origin = new Point2D.Double(counter, 0);
         listPoints.add(origin);
@@ -113,21 +100,11 @@ class CartesianPanel extends JPanel implements ActionListener{
         Point2D.Double originPlus = new Point2D.Double(counter, 0+error);
         listErrorPlus.add(originPlus);
         counter++;
-        //X_AXIS_SECOND_X_COORD = x_axis_second_x_coord;
-        /*X_AXIS_SECOND_X_COORD = this.getWidth()-100;
-        //X_AXIS_Y_COORD = x_axis_y_coord;
-        X_AXIS_Y_COORD = this.getWidth()-100;
-        //Y_AXIS_SECOND_Y_COORD = y_axis_second_y_coord;
-        Y_AXIS_SECOND_Y_COORD = this.getHeight()-100;*/
         dataY = data;
-        //yMinimum = minimum-(int)Math.ceil(error);
-        //yMaximum = maximum+(int)Math.ceil(error);
         titleColor = color;
-        //predictionError = error;
         file = new File("MAE_result.csv");
         timeStamp = file.lastModified();
         readFile();
-        //printPoints();
     }
         
     public void readFile(){
@@ -136,8 +113,6 @@ class CartesianPanel extends JPanel implements ActionListener{
         listErrorPlus.clear();
         listErrorMinus.clear();
         counter=1;
-        //Point2D.Double origin = new Point2D.Double(counter, 0);
-        //listPoints.add(origin);
         
         String csvFile = "MAE_result.csv";
 	BufferedReader br = null;
@@ -148,23 +123,7 @@ class CartesianPanel extends JPanel implements ActionListener{
 
 		br = new BufferedReader(new FileReader(csvFile));
                 line = br.readLine();
-                //int count = 0;
-                String[] titles = line.split(cvsSplitBy);
-                /*for(int i = 0 ; i<titles.length;i++){
-                    if(titles[i].equals(dataY)){
-                        column = count;
-                        break;
-                    }
-                    else{
-                        count++;
-                    }
-                }*/
-                
-                /*for(int i=1;i<=counterTop;i++){
-                    line = br.readLine();
-                }*/
                 columnAVG = 2;
-                int top = 0;
                 Double min = 0.0;
                 Double max = 0.0;
                 while ((line = br.readLine()) != null)
@@ -190,21 +149,10 @@ class CartesianPanel extends JPanel implements ActionListener{
                     listErrorMinus.add(pointMinus);
                     
                     counter++;
-                    counterTop++;
-                    top++;
                 }
-                //if((line = br.readLine()) == null)
-                    //finish=true;
-                System.out.println("countertop "+counterTop);
-                //counter=1;
-
-                cicle++;
                 
                 yMinimum = (int)Math.ceil(min);
                 yMaximum = (int)Math.ceil(max);
-                System.out.println("min "+yMinimum);
-                System.out.println("max "+yMaximum);
-                System.out.println("list "+listPoints.size());
 
 	} catch (FileNotFoundException e) {
 		e.printStackTrace();
@@ -219,74 +167,6 @@ class CartesianPanel extends JPanel implements ActionListener{
 			}
 		}
 	}
-        
-        /*try
-        {
-            //listPoints.clear();
-            
-            POIFSFileSystem file = new POIFSFileSystem(new FileInputStream("Prediction.xls"));
-            
-            //Create Workbook instance holding reference to .xlsx file
-            HSSFWorkbook workbook = new HSSFWorkbook(file);
-            
-            //Get first/desired sheet from the workbook
-            HSSFSheet sheet = workbook.getSheetAt(1);
-            
-            Iterator<Row> rowIterator = sheet.iterator();
-            Row titles = rowIterator.next();
-            Iterator<Cell> titlesIterator = titles.cellIterator();
-            int count = 0;
-            while (titlesIterator.hasNext())
-            {
-                Cell cell = titlesIterator.next();
-                //Check the cell type and format accordingly
-                if(cell.getStringCellValue().equals(dataY)){
-                    column = count;
-                    break;
-                }
-                else{
-                    count++;
-                }
-            }
-            for(int i=1;i<=counterTop;i++){
-                rowIterator.next();
-            }
-            int top = 0;
-            //while (rowIterator.hasNext() && top<xCoordNumbers)
-            while (rowIterator.hasNext())
-            {
-                Row row = rowIterator.next();
-                //For each row, iterate through all the columns
-                Iterator<Cell> cellIterator = row.cellIterator();
-                for(int i=0;i<column;i++){
-                    cellIterator.next();
-                }
-                Cell cell = cellIterator.next();
-                Double yValue;
-                yValue = cell.getNumericCellValue();
-                Point2D.Double point = new Point2D.Double(counter, yValue);
-                listPoints.add(point);
-                //
-                Point2D.Double pointPlus = new Point2D.Double(counter, yValue + predictionError);
-                listErrorPlus.add(pointPlus);
-                Point2D.Double pointMinus = new Point2D.Double(counter, yValue - predictionError);
-                listErrorMinus.add(pointMinus);
-                //
-                counter++;
-                counterTop++;
-                top++;
-            }
-            if(!rowIterator.hasNext())
-                finish=true;
-            System.out.println("countertop "+counterTop);
-            //counter=1;
-            
-            cicle++;
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }*/
     }
     
     public void printPoints(){
@@ -294,8 +174,6 @@ class CartesianPanel extends JPanel implements ActionListener{
             System.out.println("x: " + listPoints.get(i).x + " y: " + listPoints.get(i).y);
         }
     }
-    
-    //
     
     @Override
     public void paintComponent(Graphics g) {
@@ -327,8 +205,6 @@ class CartesianPanel extends JPanel implements ActionListener{
         Font font1 = new Font(g2.getFont().getFontName(), Font.BOLD, 12);
         g2.setFont(font1); 
         
-        
-        
         // x-axis arrow
         g2.drawLine(X_AXIS_FIRST_X_COORD + (listPoints.size() * xLength) - FIRST_LENGHT,
                 X_AXIS_Y_COORD - SECOND_LENGHT,
@@ -347,8 +223,6 @@ class CartesianPanel extends JPanel implements ActionListener{
         
         Font font2 = new Font(g2.getFont().getFontName(), Font.PLAIN, 10);
         g2.setFont(font2); 
-        
-        
         
         // draw x-axis numbers
         for(int i = 1; i < listPoints.size(); i++) {
@@ -369,15 +243,11 @@ class CartesianPanel extends JPanel implements ActionListener{
         
                 
         int yLength;
-        
-        //draw y-axis numbers
-        //int division;
         float division;
         if(yMaximum > yCoordNumbers){
             Float max = (float)yMaximum;
             yLength = (Y_AXIS_SECOND_Y_COORD - Y_AXIS_FIRST_Y_COORD)
                     / yCoordNumbers;
-            //division = (int)Math.ceil(max / yCoordNumbers);
             division = max / yCoordNumbers;
             for(int i = 1; i < yCoordNumbers; i++) {
                 g2.drawLine(Y_AXIS_X_COORD - SECOND_LENGHT,
@@ -411,9 +281,6 @@ class CartesianPanel extends JPanel implements ActionListener{
         }
         
         Stroke stroke = new BasicStroke(2f);
-        float[] dashingPattern1 = {2f, 2f};
-        Stroke stroke1 = new BasicStroke(0.5f, BasicStroke.CAP_BUTT,
-                BasicStroke.JOIN_MITER, 1.0f, dashingPattern1, 2.0f);
         
         for (int i=0;i<listPoints.size()-1;i++){
             g2.setStroke(stroke);
@@ -465,7 +332,6 @@ class CartesianPanel extends JPanel implements ActionListener{
             g2.draw(new Line2D.Double(initial,end));
             
             g2.setColor(Color.RED);
-            //g2.setStroke(stroke1);
             
             g2.draw(new Line2D.Double(initialPlus,endPlus));
             g2.setColor(Color.GREEN);
@@ -473,8 +339,7 @@ class CartesianPanel extends JPanel implements ActionListener{
             
             
         }        
-        //if(!finish)
-            timer.start();
+        timer.start();
         revalidate();
     }
     
@@ -488,21 +353,11 @@ class CartesianPanel extends JPanel implements ActionListener{
                revalidate();
                repaint();
             }
-            /*if(!finish){
-                //removeAll();
-                readFile();
-                //printPoints();
-                revalidate();
-                repaint();// this will call at every s seconds
-            }*/
-            //else
-              //  revalidate();
         }
     }
     
     @Override
     public Dimension getPreferredSize() {
         return new Dimension((X_AXIS_FIRST_X_COORD*2) + (listPoints.size() * xLength), Y_AXIS_SECOND_Y_COORD+Y_AXIS_X_COORD);
-        //return new Dimension((X_AXIS_FIRST_X_COORD*2) + X_AXIS_SECOND_X_COORD, Y_AXIS_SECOND_Y_COORD+Y_AXIS_X_COORD);
     }
 }
