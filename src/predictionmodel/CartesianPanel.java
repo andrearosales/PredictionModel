@@ -349,10 +349,9 @@ class CartesianPanel extends JPanel implements ActionListener {
     }
 
     /**
-     * Method that helps the graphic visualization. It returns the whole
-     * dimension of the panel
+     * Method that helps the graphic visualization.
      *
-     * @return
+     * @return Whole dimension of the panel.
      */
     @Override
     public Dimension getPreferredSize() {
