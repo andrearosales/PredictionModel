@@ -14,8 +14,9 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 
 /**
+ * Class that plots the results of the prediction.
  *
- * @author aRosales Class that plots the results of the prediction.
+ * @author aRosales
  */
 class CartesianFrame extends JFrame {
 
@@ -25,7 +26,7 @@ class CartesianFrame extends JFrame {
      * Constructor of the class that initializes the initial plots with the
      * received selected options.
      *
-     * @param signalTitle - Title of the predicted signal
+     * @param signalTitle Title of the predicted signal
      */
     public CartesianFrame(String signalTitle) {
         setSize(1000, 600);

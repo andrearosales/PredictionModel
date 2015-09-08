@@ -28,8 +28,9 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 /**
+ * Class that individually manages the graphic.
  *
- * @author aRosales Class that individually manages the graphic.
+ * @author aRosales
  */
 class CartesianPanel extends JPanel implements ActionListener {
 
@@ -76,7 +77,7 @@ class CartesianPanel extends JPanel implements ActionListener {
      * Method that allows the initialization of the initial thata for the
      * graphic.
      *
-     * @param color - Specified color for displaying the signal.
+     * @param color Specified color for displaying the signal.
      */
     public void setAxes(Color color) {
         xLength = (X_AXIS_SECOND_X_COORD - X_AXIS_FIRST_X_COORD)
@@ -163,6 +164,12 @@ class CartesianPanel extends JPanel implements ActionListener {
         }
     }
 
+    /**
+     * Inherited method in charge of setting the components of the image so they
+     * can be visualized.
+     *
+     * @param g Graphic were the components will be displayed.
+     */
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -322,6 +329,12 @@ class CartesianPanel extends JPanel implements ActionListener {
         revalidate();
     }
 
+    /**
+     * Method that is triggered each s seconds in order to analize if the
+     * results file has changed.
+     *
+     * @param ae Action event that triggered the method.
+     */
     @Override
     public void actionPerformed(ActionEvent ae) {
         if (ae.getSource() == timer) {
@@ -335,6 +348,12 @@ class CartesianPanel extends JPanel implements ActionListener {
         }
     }
 
+    /**
+     * Method that helps the graphic visualization. It returns the whole
+     * dimension of the panel
+     *
+     * @return
+     */
     @Override
     public Dimension getPreferredSize() {
         return new Dimension((X_AXIS_FIRST_X_COORD * 2) + (listPoints.size() * xLength), Y_AXIS_SECOND_Y_COORD + Y_AXIS_X_COORD);

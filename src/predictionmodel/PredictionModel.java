@@ -8,13 +8,15 @@ package predictionmodel;
 import javax.swing.SwingUtilities;
 
 /**
+ * Main class of the project. Runs the panel with the results of the prediction.
  *
- * @author aRosales Main class of the project. Runs the panel with the results
- * of the prediction.
+ * @author aRosales
  */
 public class PredictionModel {
 
     /**
+     * Main method that starts the plot visualization.
+     *
      * @param args the command line arguments
      */
     public static void main(String[] args) {
