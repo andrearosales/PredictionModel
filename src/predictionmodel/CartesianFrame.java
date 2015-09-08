@@ -21,6 +21,12 @@ class CartesianFrame extends JFrame {
 
     private CartesianPanel results;
 
+    /**
+     * Constructor of the class that initializes the initial plots with the
+     * received selected options.
+     *
+     * @param signalTitle - Title of the predicted signal
+     */
     public CartesianFrame(String signalTitle) {
         setSize(1000, 600);
         setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
@@ -69,6 +75,9 @@ class CartesianFrame extends JFrame {
         add(minusMAE);
     }
 
+    /**
+     * Method that allows the visualization of the frame.
+     */
     public void showUI() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setTitle("Prediction Results");
