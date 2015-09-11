@@ -34,7 +34,7 @@ import javax.swing.Timer;
  */
 class CartesianPanel extends JPanel implements ActionListener {
 
-    private final Timer timer = new Timer(1000, this);
+    private final Timer timer = new Timer(500, this);
     // x-axis coord constants
     public static final int X_AXIS_FIRST_X_COORD = 50;
     public int X_AXIS_SECOND_X_COORD = 400;
@@ -200,15 +200,15 @@ class CartesianPanel extends JPanel implements ActionListener {
         g2.setFont(font1);
 
         // x-axis arrow
-        g2.drawLine(X_AXIS_FIRST_X_COORD + (listPoints.size() * xLength) - FIRST_LENGHT,
+        g2.drawLine(X_AXIS_FIRST_X_COORD + ((listPoints.size()+1) * xLength) - FIRST_LENGHT,
                 X_AXIS_Y_COORD - SECOND_LENGHT,
-                X_AXIS_FIRST_X_COORD + (listPoints.size() * xLength), X_AXIS_Y_COORD);
-        g2.drawLine(X_AXIS_FIRST_X_COORD + (listPoints.size() * xLength) - FIRST_LENGHT,
+                X_AXIS_FIRST_X_COORD + ((listPoints.size()+1) * xLength), X_AXIS_Y_COORD);
+        g2.drawLine(X_AXIS_FIRST_X_COORD + ((listPoints.size()+1) * xLength) - FIRST_LENGHT,
                 X_AXIS_Y_COORD + SECOND_LENGHT,
-                X_AXIS_FIRST_X_COORD + (listPoints.size() * xLength), X_AXIS_Y_COORD);
+                X_AXIS_FIRST_X_COORD + ((listPoints.size()+1) * xLength), X_AXIS_Y_COORD);
 
         // draw text "X" and draw text "Y"
-        g2.drawString("X", X_AXIS_FIRST_X_COORD + (listPoints.size() * xLength),
+        g2.drawString("Step", X_AXIS_FIRST_X_COORD + ((listPoints.size()+1) * xLength),
                 X_AXIS_Y_COORD + AXIS_STRING_DISTANCE);
         g2.drawString("Signal", Y_AXIS_X_COORD - AXIS_STRING_DISTANCE,
                 Y_AXIS_DATA_Y_COORD);
@@ -219,17 +219,19 @@ class CartesianPanel extends JPanel implements ActionListener {
         g2.setFont(font2);
 
         // draw x-axis numbers
-        for (int i = 1; i < listPoints.size(); i++) {
-            g2.drawLine(X_AXIS_FIRST_X_COORD + (i * xLength),
-                    X_AXIS_Y_COORD - SECOND_LENGHT,
-                    X_AXIS_FIRST_X_COORD + (i * xLength),
-                    X_AXIS_Y_COORD + SECOND_LENGHT);
-            g2.drawLine(X_AXIS_FIRST_X_COORD + ((i) * xLength), X_AXIS_Y_COORD,
+        for (int i = 1; i <= listPoints.size()+1; i++) {
+            if(i<listPoints.size()+1){
+                g2.drawLine(X_AXIS_FIRST_X_COORD + (i * xLength),
+                        X_AXIS_Y_COORD - SECOND_LENGHT,
+                        X_AXIS_FIRST_X_COORD + (i * xLength),
+                        X_AXIS_Y_COORD + SECOND_LENGHT);
+            }
+                g2.drawLine(X_AXIS_FIRST_X_COORD + ((i) * xLength), X_AXIS_Y_COORD,
                     X_AXIS_FIRST_X_COORD + ((i - 1) * xLength), X_AXIS_Y_COORD);
         }
         g2.drawLine(X_AXIS_FIRST_X_COORD + (listPoints.size() * xLength), X_AXIS_Y_COORD,
                 X_AXIS_FIRST_X_COORD + ((listPoints.size() - 1) * xLength), X_AXIS_Y_COORD);
-        for (int i = 1; i < listPoints.size(); i++) {
+        for (int i = 1; i < listPoints.size()+1; i++) {
             g2.drawString(Integer.toString(i),
                     X_AXIS_FIRST_X_COORD + (i * xLength) - 3,
                     X_AXIS_Y_COORD + AXIS_STRING_DISTANCE);
@@ -272,6 +274,19 @@ class CartesianPanel extends JPanel implements ActionListener {
         }
 
         Stroke stroke = new BasicStroke(2f);
+        if(listPoints.size()==1){
+            g2.setStroke(stroke);
+            g2.setColor(titleColor);
+            if (yMaximum > yCoordNumbers) {
+                g2.draw(new Ellipse2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(0).x * xLength) - (point_lenght / 2),
+                        Y_AXIS_SECOND_Y_COORD - ((listPoints.get(0).y * yCoordNumbers / yMaximum) * yLength) - (point_lenght / 2),
+                        point_lenght, point_lenght));
+            } else {
+                g2.draw(new Ellipse2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(0).x * xLength) - (point_lenght / 2),
+                        Y_AXIS_SECOND_Y_COORD - (listPoints.get(0).y * yLength) - (point_lenght / 2),
+                        point_lenght, point_lenght));
+            }
+        }
         for (int i = 0; i < listPoints.size() - 1; i++) {
             g2.setStroke(stroke);
             g2.setColor(titleColor);
@@ -317,7 +332,6 @@ class CartesianPanel extends JPanel implements ActionListener {
                         Y_AXIS_SECOND_Y_COORD - (listPoints.get(i).y * yLength) - (point_lenght / 2),
                         point_lenght, point_lenght));
             }
-
             g2.draw(new Line2D.Double(initial, end));
             g2.setColor(Color.RED);
             g2.draw(new Line2D.Double(initialPlus, endPlus));

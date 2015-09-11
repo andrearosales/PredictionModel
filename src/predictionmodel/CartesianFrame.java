@@ -58,7 +58,7 @@ class CartesianFrame extends JFrame {
 
         JLabel plusMAE = new JLabel();
         plusMAE.setAlignmentX(Component.CENTER_ALIGNMENT);
-        plusMAE.setText("AVG_SIGNAL + MAE");
+        plusMAE.setText("AVG_SIGNAL + Error Measure");
         plusMAE.setForeground(Color.RED);
 
         JLabel avg = new JLabel();
@@ -68,7 +68,7 @@ class CartesianFrame extends JFrame {
 
         JLabel minusMAE = new JLabel();
         minusMAE.setAlignmentX(Component.CENTER_ALIGNMENT);
-        minusMAE.setText("AVG_SIGNAL - MAE");
+        minusMAE.setText("AVG_SIGNAL - Error Measure");
         minusMAE.setForeground(Color.GREEN);
 
         add(plusMAE);
