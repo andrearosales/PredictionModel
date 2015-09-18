@@ -240,20 +240,22 @@ class CartesianPanel extends JPanel implements ActionListener {
         float division;
         if (yMaximum > yCoordNumbers) {
             Float max = (float) yMaximum;
-            yLength = (Y_AXIS_SECOND_Y_COORD - Y_AXIS_FIRST_Y_COORD)
-                    / yCoordNumbers;
+            yLength = (int)Math.ceil((Y_AXIS_SECOND_Y_COORD - Y_AXIS_FIRST_Y_COORD)
+                    / yCoordNumbers);
             division = max / yCoordNumbers;
+            division = (float)Math.ceil(division);
             for (int i = 1; i < yCoordNumbers; i++) {
                 g2.drawLine(Y_AXIS_X_COORD - SECOND_LENGHT,
                         Y_AXIS_SECOND_Y_COORD - (i * yLength),
                         Y_AXIS_X_COORD + SECOND_LENGHT,
                         Y_AXIS_SECOND_Y_COORD - (i * yLength));
-                String result = String.format("%.2f", i * division);
+                String result = String.format("%.0f", i * division);
                 g2.drawString(result,
                         Y_AXIS_X_COORD - AXIS_STRING_DISTANCE,
                         Y_AXIS_SECOND_Y_COORD - (i * yLength));
             }
-            g2.drawString(Double.toString(yCoordNumbers * division),
+            String result = String.format("%.0f", yCoordNumbers * division);
+            g2.drawString(result,
                     Y_AXIS_X_COORD - AXIS_STRING_DISTANCE,
                     Y_AXIS_SECOND_Y_COORD - (yCoordNumbers * yLength));
         } else {
