@@ -26,7 +26,10 @@ class CartesianFrame extends JFrame {
      * Constructor of the class that initializes the initial plots with the
      * received selected options.
      *
-     * @param signal Title of the predicted signal
+     * @param signal Predicted signal (HR_next, HR_peak, VO2_next or VO2_peak)
+     * @param approach Approach that was used for the prediction (Multiple-test or Single-test)
+     * @param technique Technique that was used for the prediction (ANN or SVM)
+     * @param error Measurement of error used in the prediction (MAE or RMSE)
      */
     public CartesianFrame(String signal, String approach, String technique, String error) {
         setSize(1000, 600);
