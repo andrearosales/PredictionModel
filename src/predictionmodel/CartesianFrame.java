@@ -26,12 +26,12 @@ class CartesianFrame extends JFrame {
      * Constructor of the class that initializes the initial plots with the
      * received selected options.
      *
-     * @param signalTitle Title of the predicted signal
+     * @param signal Title of the predicted signal
      */
-    public CartesianFrame(String signalTitle) {
+    public CartesianFrame(String signal, String approach, String technique, String error) {
         setSize(1000, 600);
         setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
-
+        String generalTitle = String.format("%s          %s          %s          %s", signal, approach, technique, error);
         //Adding the general title
         JLabel labelTitle = new JLabel();
         labelTitle.setText("PREDICTION RESULTS");
@@ -43,12 +43,12 @@ class CartesianFrame extends JFrame {
 
         JLabel title = new JLabel();
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
-        title.setText(signalTitle);
+        title.setText(generalTitle);
 
         results = new CartesianPanel();
         results.setAlignmentX(Component.LEFT_ALIGNMENT);
         results.setBackground(Color.WHITE);
-        results.setAxes(Color.BLUE);
+        results.setAxes(Color.BLUE, signal);
 
         container.add(title);
         JScrollPane scroll = new JScrollPane(results);
@@ -58,17 +58,17 @@ class CartesianFrame extends JFrame {
 
         JLabel plusMAE = new JLabel();
         plusMAE.setAlignmentX(Component.CENTER_ALIGNMENT);
-        plusMAE.setText("SIGNAL + Error Measure");
+        plusMAE.setText(signal + " + " + error);
         plusMAE.setForeground(Color.RED);
 
         JLabel avg = new JLabel();
         avg.setAlignmentX(Component.CENTER_ALIGNMENT);
-        avg.setText("SIGNAL");
+        avg.setText(signal);
         avg.setForeground(Color.BLUE);
 
         JLabel minusMAE = new JLabel();
         minusMAE.setAlignmentX(Component.CENTER_ALIGNMENT);
-        minusMAE.setText("SIGNAL - Error Measure");
+        minusMAE.setText(signal + " - " + error);
         minusMAE.setForeground(Color.GREEN);
 
         add(plusMAE);

@@ -72,17 +72,20 @@ class CartesianPanel extends JPanel implements ActionListener {
     private Color titleColor;
     private long timeStamp;
     private File file;
+    private String predictedSignal;
 
     /**
      * Method that allows the initialization of the initial thata for the
      * graphic.
      *
      * @param color Specified color for displaying the signal.
+     * @param signal Predicted signal.
      */
-    public void setAxes(Color color) {
+    public void setAxes(Color color, String signal) {
         xLength = (X_AXIS_SECOND_X_COORD - X_AXIS_FIRST_X_COORD)
                 / xCoordNumbers;
         counter = 0;
+        predictedSignal = signal;
         listPoints = new ArrayList<>();
         listErrorMinus = new ArrayList<>();
         listErrorPlus = new ArrayList<>();
@@ -210,7 +213,7 @@ class CartesianPanel extends JPanel implements ActionListener {
         // draw text "X" and draw text "Y"
         g2.drawString("Step", X_AXIS_FIRST_X_COORD + ((listPoints.size()+1) * xLength),
                 X_AXIS_Y_COORD + AXIS_STRING_DISTANCE);
-        g2.drawString("Signal", Y_AXIS_X_COORD - AXIS_STRING_DISTANCE,
+        g2.drawString(predictedSignal, Y_AXIS_X_COORD - AXIS_STRING_DISTANCE,
                 Y_AXIS_DATA_Y_COORD);
         g2.drawString("(0, 0)", X_AXIS_FIRST_X_COORD - AXIS_STRING_DISTANCE,
                 Y_AXIS_SECOND_Y_COORD + AXIS_STRING_DISTANCE);

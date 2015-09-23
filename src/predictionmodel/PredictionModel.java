@@ -20,11 +20,14 @@ public class PredictionModel {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        final String title = args[0];
+        final String signal = args[0];
+        final String approach = args[1];
+        final String technique = args[2];
+        final String error = args[3];
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                CartesianFrame frame = new CartesianFrame(title);
+                CartesianFrame frame = new CartesianFrame(signal, approach, technique, error);
                 frame.showUI();
             }
         });
