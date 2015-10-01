@@ -24,11 +24,12 @@ public class PredictionModel {
         final String approach = args[1];
         final String technique = args[2];
         final String error = args[3];
+        final String signalFile = args[4];
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
                 CartesianFrame frame = new CartesianFrame(signal, approach, technique, error);
-                CartesianFrameSignal frameS = new CartesianFrameSignal();
+                CartesianFrameSignal frameS = new CartesianFrameSignal(signalFile);
                 frame.showUI();
                 frameS.showUI();
             }

@@ -26,9 +26,12 @@ public class CartesianFrameSignal extends JFrame {
     private Container contVO2;
 
     /**
-     * Default constructor of the class that will initialize the main panels. *
+     * Default constructor of the class that will initialize the main panels.
+     *
+     * @param signalFile Name of the file that contain the heart rate and oxygen
+     * consumption measured values.
      */
-    public CartesianFrameSignal() {
+    public CartesianFrameSignal(String signalFile) {
         setSize(1000, 800);
         setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
         //Adding the general title
@@ -54,7 +57,7 @@ public class CartesianFrameSignal extends JFrame {
 
         CartesianPanelSignal panel = new CartesianPanelSignal();
         panel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        panel.setAxes("HR", 33, 215, Color.RED);
+        panel.setAxes("HR", 33, 215, Color.GRAY, signalFile);
         panel.setBackground(Color.white);
         JScrollPane scroll = new JScrollPane(panel);
         contHR.add(scroll);
@@ -71,7 +74,7 @@ public class CartesianFrameSignal extends JFrame {
 
         CartesianPanelSignal panelVO2 = new CartesianPanelSignal();
         panelVO2.setAlignmentX(Component.LEFT_ALIGNMENT);
-        panelVO2.setAxes("VO2", 0, 6411, Color.BLUE);
+        panelVO2.setAxes("VO2", 0, 6411, Color.YELLOW, signalFile);
         panelVO2.setBackground(Color.white);
         JScrollPane scrollVO2 = new JScrollPane(panelVO2);
         contVO2.add(scrollVO2);
