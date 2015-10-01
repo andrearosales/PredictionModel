@@ -28,7 +28,9 @@ public class PredictionModel {
             @Override
             public void run() {
                 CartesianFrame frame = new CartesianFrame(signal, approach, technique, error);
+                CartesianFrameSignal frameS = new CartesianFrameSignal();
                 frame.showUI();
+                frameS.showUI();
             }
         });
     }

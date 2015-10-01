@@ -28,11 +28,11 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 /**
- * Class that individually manages the graphic.
+ * Class that manages the heart rate and the oxygen consumption signals.
  *
  * @author aRosales
  */
-class CartesianPanel extends JPanel implements ActionListener {
+class CartesianPanelSignal extends JPanel implements ActionListener {
 
     private final Timer timer = new Timer(500, this);
     // x-axis coord constants
@@ -51,47 +51,52 @@ class CartesianPanel extends JPanel implements ActionListener {
     public static final int FIRST_LENGHT = 10;
     public static final int SECOND_LENGHT = 5;
 
-    // size of start coordinate lenght
+    //Size of start coordinate lenght
     public static final int ORIGIN_COORDINATE_LENGHT = 6;
     public static final int point_lenght = 3;
 
-    // distance of coordinate strings from axis
+    //Distance of coordinate strings from axis
     public static final int AXIS_STRING_DISTANCE = 30;
 
     private ArrayList<Point2D.Double> listPoints;
-    private ArrayList<Point2D.Double> listErrorPlus;
-    private ArrayList<Point2D.Double> listErrorMinus;
+    private String dataY;
     private double counter;
-    private double predictionError;
+    private boolean finish;
     private final int xCoordNumbers = 15;
     private final int yCoordNumbers = 10;
     private int yMinimum;
     private int yMaximum;
-    private int columnAVG;
     private int xLength;
+    private int column;
+    private int counterTop;
     private Color titleColor;
     private long timeStamp;
     private File file;
-    private String predictedSignal;
 
     /**
-     * Method that allows the initialization of the initial thata for the
-     * graphic.
+     * Method that allows the initialization of the specific data for each
+     * signal.
      *
+     * @param data Title of the signal.
+     * @param minimum Minimum value the signal can take.
+     * @param maximum Maximum value the signal can take.
      * @param color Specified color for displaying the signal.
-     * @param signal Predicted signal.
      */
-    public void setAxes(Color color, String signal) {
+    public void setAxes(String data, int minimum, int maximum, Color color) {
         xLength = (X_AXIS_SECOND_X_COORD - X_AXIS_FIRST_X_COORD)
                 / xCoordNumbers;
         counter = 0;
-        predictedSignal = signal;
+        counterTop = 0;
+        finish = false;
         listPoints = new ArrayList<>();
-        listErrorMinus = new ArrayList<>();
-        listErrorPlus = new ArrayList<>();
+        Point2D.Double origin = new Point2D.Double(counter, 0);
+        listPoints.add(origin);
         counter++;
+        dataY = data;
+        yMinimum = minimum;
+        yMaximum = maximum;
         titleColor = color;
-        file = new File("MAE_result.csv");
+        file = new File("0004_300.csv");
         timeStamp = file.lastModified();
         readFile();
     }
@@ -101,48 +106,54 @@ class CartesianPanel extends JPanel implements ActionListener {
      */
     public void readFile() {
 
-        listPoints.clear();
-        listErrorPlus.clear();
-        listErrorMinus.clear();
-        counter = 1;
-
-        String csvFile = "MAE_result.csv";
+        String csvFile = "0004_300.csv";
         BufferedReader br = null;
         String line;
         String cvsSplitBy = ";";
-
+        listPoints.clear();
+        counter = 0;
+        Point2D.Double origin = new Point2D.Double(counter, 0);
+        listPoints.add(origin);
+        counter++;
         try {
             br = new BufferedReader(new FileReader(csvFile));
             line = br.readLine();
-            columnAVG = 2;
-            Double min = 0.0;
-            Double max = 0.0;
+            int count = 0;
+            String[] titles = line.split(cvsSplitBy);
+            for (String title : titles) {
+                if (title.equals(dataY)) {
+                    column = count;
+                    break;
+                } else {
+                    count++;
+                }
+            }
+            /*for (int i = 1; i <= counterTop; i++) {
+                line = br.readLine();
+            }
+            int top = 0;
+            while ((line = br.readLine()) != null && top < xCoordNumbers) {
+                String[] values = line.split(cvsSplitBy);
+                Double yValue;
+                yValue = Double.valueOf(values[column]);
+                Point2D.Double point = new Point2D.Double(counter, yValue);
+                listPoints.add(point);
+                counter++;
+                counterTop++;
+                top++;
+            }
+            if ((line = br.readLine()) == null) {
+                finish = true;
+            }*/
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(cvsSplitBy);
                 Double yValue;
-                Double valuePlus;
-                Double valueMinus;
-                yValue = Double.valueOf(values[columnAVG]);
-                valuePlus = Double.valueOf(values[columnAVG + 1]);
-                if (valuePlus > max) {
-                    max = valuePlus;
-                }
-                valueMinus = Double.valueOf(values[columnAVG + 2]);
-                predictionError = Double.valueOf(values[1]);
-                if (valueMinus < min) {
-                    min = valueMinus;
-                }
+                yValue = Double.valueOf(values[column]);
                 Point2D.Double point = new Point2D.Double(counter, yValue);
                 listPoints.add(point);
-                Point2D.Double pointPlus = new Point2D.Double(counter, valuePlus);
-                listErrorPlus.add(pointPlus);
-                Point2D.Double pointMinus = new Point2D.Double(counter, valueMinus);
-                listErrorMinus.add(pointMinus);
                 counter++;
             }
-            yMinimum = (int) Math.ceil(min);
-            yMaximum = (int) Math.ceil(max);
-
+            
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -178,10 +189,11 @@ class CartesianPanel extends JPanel implements ActionListener {
         super.paintComponent(g);
 
         Graphics2D g2 = (Graphics2D) g;
+
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
 
-        // y-axis
+        // x-axis
         g2.drawLine(Y_AXIS_X_COORD, Y_AXIS_FIRST_Y_COORD,
                 Y_AXIS_X_COORD, Y_AXIS_SECOND_Y_COORD);
 
@@ -203,22 +215,22 @@ class CartesianPanel extends JPanel implements ActionListener {
         g2.setFont(font1);
 
         // x-axis arrow
-        g2.drawLine(X_AXIS_FIRST_X_COORD + ((listPoints.size()+1) * xLength) - FIRST_LENGHT,
+        g2.drawLine(X_AXIS_FIRST_X_COORD + (listPoints.size() * xLength) - FIRST_LENGHT,
                 X_AXIS_Y_COORD - SECOND_LENGHT,
-                X_AXIS_FIRST_X_COORD + ((listPoints.size()+1) * xLength), X_AXIS_Y_COORD);
-        g2.drawLine(X_AXIS_FIRST_X_COORD + ((listPoints.size()+1) * xLength) - FIRST_LENGHT,
+                X_AXIS_FIRST_X_COORD + (listPoints.size() * xLength), X_AXIS_Y_COORD);
+        g2.drawLine(X_AXIS_FIRST_X_COORD + (listPoints.size() * xLength) - FIRST_LENGHT,
                 X_AXIS_Y_COORD + SECOND_LENGHT,
-                X_AXIS_FIRST_X_COORD + ((listPoints.size()+1) * xLength), X_AXIS_Y_COORD);
+                X_AXIS_FIRST_X_COORD + (listPoints.size() * xLength), X_AXIS_Y_COORD);
 
         // draw text "X" and draw text "Y"
-        g2.drawString("Step", X_AXIS_FIRST_X_COORD + ((listPoints.size()+1) * xLength),
+        g2.drawString("X", X_AXIS_FIRST_X_COORD + (listPoints.size() * xLength),
                 X_AXIS_Y_COORD + AXIS_STRING_DISTANCE);
-        if(predictedSignal.contains("HR")){
-            g2.drawString(predictedSignal + " (bpm)", Y_AXIS_X_COORD - AXIS_STRING_DISTANCE,
+        if (dataY.contains("HR")){
+            g2.drawString(dataY + " (bpm)", Y_AXIS_X_COORD - AXIS_STRING_DISTANCE,
                 Y_AXIS_DATA_Y_COORD);
         }
-        else {
-            g2.drawString(predictedSignal + " (l/min)", Y_AXIS_X_COORD - AXIS_STRING_DISTANCE,
+        else{
+            g2.drawString(dataY + " (l/min)", Y_AXIS_X_COORD - AXIS_STRING_DISTANCE,
                 Y_AXIS_DATA_Y_COORD);
         }
         g2.drawString("(0, 0)", X_AXIS_FIRST_X_COORD - AXIS_STRING_DISTANCE,
@@ -228,19 +240,17 @@ class CartesianPanel extends JPanel implements ActionListener {
         g2.setFont(font2);
 
         // draw x-axis numbers
-        for (int i = 1; i <= listPoints.size()+1; i++) {
-            if(i<listPoints.size()+1){
-                g2.drawLine(X_AXIS_FIRST_X_COORD + (i * xLength),
-                        X_AXIS_Y_COORD - SECOND_LENGHT,
-                        X_AXIS_FIRST_X_COORD + (i * xLength),
-                        X_AXIS_Y_COORD + SECOND_LENGHT);
-            }
-                g2.drawLine(X_AXIS_FIRST_X_COORD + ((i) * xLength), X_AXIS_Y_COORD,
+        for (int i = 1; i < listPoints.size(); i++) {
+            g2.drawLine(X_AXIS_FIRST_X_COORD + (i * xLength),
+                    X_AXIS_Y_COORD - SECOND_LENGHT,
+                    X_AXIS_FIRST_X_COORD + (i * xLength),
+                    X_AXIS_Y_COORD + SECOND_LENGHT);
+            g2.drawLine(X_AXIS_FIRST_X_COORD + ((i) * xLength), X_AXIS_Y_COORD,
                     X_AXIS_FIRST_X_COORD + ((i - 1) * xLength), X_AXIS_Y_COORD);
         }
         g2.drawLine(X_AXIS_FIRST_X_COORD + (listPoints.size() * xLength), X_AXIS_Y_COORD,
                 X_AXIS_FIRST_X_COORD + ((listPoints.size() - 1) * xLength), X_AXIS_Y_COORD);
-        for (int i = 1; i < listPoints.size()+1; i++) {
+        for (int i = 1; i < listPoints.size(); i++) {
             g2.drawString(Integer.toString(i),
                     X_AXIS_FIRST_X_COORD + (i * xLength) - 3,
                     X_AXIS_Y_COORD + AXIS_STRING_DISTANCE);
@@ -275,7 +285,7 @@ class CartesianPanel extends JPanel implements ActionListener {
                         Y_AXIS_SECOND_Y_COORD - (i * yLength),
                         Y_AXIS_X_COORD + SECOND_LENGHT,
                         Y_AXIS_SECOND_Y_COORD - (i * yLength));
-                g2.drawString(Integer.toString(yMinimum + (int) Math.ceil(predictionError) + i),
+                g2.drawString(Integer.toString(yMinimum + i),
                         Y_AXIS_X_COORD - AXIS_STRING_DISTANCE,
                         Y_AXIS_SECOND_Y_COORD - (i * yLength));
             }
@@ -283,80 +293,95 @@ class CartesianPanel extends JPanel implements ActionListener {
                     Y_AXIS_X_COORD - AXIS_STRING_DISTANCE,
                     Y_AXIS_SECOND_Y_COORD - (yMaximum * yLength));
         }
-
         Stroke stroke = new BasicStroke(2f);
-        if(listPoints.size()==1){
-            g2.setStroke(stroke);
-            g2.setColor(titleColor);
-            if (yMaximum > yCoordNumbers) {
-                g2.draw(new Ellipse2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(0).x * xLength) - (point_lenght / 2),
-                        Y_AXIS_SECOND_Y_COORD - ((listPoints.get(0).y * yCoordNumbers / yMaximum) * yLength) - (point_lenght / 2),
-                        point_lenght, point_lenght));
-            } else {
-                g2.draw(new Ellipse2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(0).x * xLength) - (point_lenght / 2),
-                        Y_AXIS_SECOND_Y_COORD - (listPoints.get(0).y * yLength) - (point_lenght / 2),
-                        point_lenght, point_lenght));
-            }
-        }
+        float[] dashingPattern1 = {2f, 2f};
+        Stroke stroke1 = new BasicStroke(0.5f, BasicStroke.CAP_BUTT,
+                BasicStroke.JOIN_MITER, 1.0f, dashingPattern1, 2.0f);
         for (int i = 0; i < listPoints.size() - 1; i++) {
             g2.setStroke(stroke);
             g2.setColor(titleColor);
             Point2D.Double initial;
             Point2D.Double end;
-            Point2D.Double initialPlus;
-            Point2D.Double endPlus;
-            Point2D.Double initialMinus;
-            Point2D.Double endMinus;
+            Point2D.Double initialVertical;
+            Point2D.Double endVertical;
+            //Point2D.Double initialHorizontal;
+            //Point2D.Double endHorizontal;
 
             if (yMaximum > yCoordNumbers) {
                 initial = new Point2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(i).x * xLength),
                         Y_AXIS_SECOND_Y_COORD - ((listPoints.get(i).y * yCoordNumbers / yMaximum) * yLength));
-                initialPlus = new Point2D.Double(X_AXIS_FIRST_X_COORD + (listErrorPlus.get(i).x * xLength),
-                        Y_AXIS_SECOND_Y_COORD - ((listErrorPlus.get(i).y * yCoordNumbers / yMaximum) * yLength));
-                initialMinus = new Point2D.Double(X_AXIS_FIRST_X_COORD + (listErrorMinus.get(i).x * xLength),
-                        Y_AXIS_SECOND_Y_COORD - ((listErrorMinus.get(i).y * yCoordNumbers / yMaximum) * yLength));
                 end = new Point2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(i + 1).x * xLength),
                         Y_AXIS_SECOND_Y_COORD - ((listPoints.get(i + 1).y * yCoordNumbers / yMaximum) * yLength));
-                endPlus = new Point2D.Double(X_AXIS_FIRST_X_COORD + (listErrorPlus.get(i + 1).x * xLength),
-                        Y_AXIS_SECOND_Y_COORD - ((listErrorPlus.get(i + 1).y * yCoordNumbers / yMaximum) * yLength));
-                endMinus = new Point2D.Double(X_AXIS_FIRST_X_COORD + (listErrorMinus.get(i + 1).x * xLength),
-                        Y_AXIS_SECOND_Y_COORD - ((listErrorMinus.get(i + 1).y * yCoordNumbers / yMaximum) * yLength));
+                initialVertical = new Point2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(i).x * xLength),
+                        Y_AXIS_SECOND_Y_COORD);
+                endVertical = new Point2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(i).x * xLength),
+                        Y_AXIS_SECOND_Y_COORD - ((listPoints.get(i).y * yCoordNumbers / yMaximum) * yLength));
 
                 g2.draw(new Ellipse2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(i).x * xLength) - (point_lenght / 2),
                         Y_AXIS_SECOND_Y_COORD - ((listPoints.get(i).y * yCoordNumbers / yMaximum) * yLength) - (point_lenght / 2),
                         point_lenght, point_lenght));
+
+                /*initialHorizontal = new Point2D.Double(X_AXIS_FIRST_X_COORD,
+                 Y_AXIS_SECOND_Y_COORD - ((listPoints.get(i).y*yCoordNumbers/yMaximum) * yLength));
+                 endHorizontal = new Point2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(i).x * xLength),
+                 Y_AXIS_SECOND_Y_COORD - ((listPoints.get(i).y*yCoordNumbers/yMaximum) * yLength));*/
             } else {
                 initial = new Point2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(i).x * xLength),
                         Y_AXIS_SECOND_Y_COORD - (listPoints.get(i).y * yLength));
-                initialPlus = new Point2D.Double(X_AXIS_FIRST_X_COORD + (listErrorPlus.get(i).x * xLength),
-                        Y_AXIS_SECOND_Y_COORD - (listErrorPlus.get(i).y * yLength));
-                initialMinus = new Point2D.Double(X_AXIS_FIRST_X_COORD + (listErrorMinus.get(i).x * xLength),
-                        Y_AXIS_SECOND_Y_COORD - (listErrorMinus.get(i).y * yLength));
                 end = new Point2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(i + 1).x * xLength),
                         Y_AXIS_SECOND_Y_COORD - (listPoints.get(i + 1).y * yLength));
-                endPlus = new Point2D.Double(X_AXIS_FIRST_X_COORD + (listErrorPlus.get(i + 1).x * xLength),
-                        Y_AXIS_SECOND_Y_COORD - (listErrorPlus.get(i + 1).y * yLength));
-                endMinus = new Point2D.Double(X_AXIS_FIRST_X_COORD + (listErrorMinus.get(i + 1).x * xLength),
-                        Y_AXIS_SECOND_Y_COORD - (listErrorMinus.get(i + 1).y * yLength));
+                initialVertical = new Point2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(i).x * xLength),
+                        Y_AXIS_SECOND_Y_COORD);
+                endVertical = new Point2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(i).x * xLength),
+                        Y_AXIS_SECOND_Y_COORD - (listPoints.get(i).y * yLength));
 
                 g2.draw(new Ellipse2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(i).x * xLength) - (point_lenght / 2),
                         Y_AXIS_SECOND_Y_COORD - (listPoints.get(i).y * yLength) - (point_lenght / 2),
                         point_lenght, point_lenght));
+                /*initialHorizontal = new Point2D.Double(X_AXIS_FIRST_X_COORD,
+                 Y_AXIS_SECOND_Y_COORD - (listPoints.get(i).y * yLength));
+                 endHorizontal = new Point2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(i).x * xLength),
+                 Y_AXIS_SECOND_Y_COORD - (listPoints.get(i).y * yLength));*/
             }
-            g2.draw(new Line2D.Double(initial, end));
-            g2.setColor(Color.RED);
-            g2.draw(new Line2D.Double(initialPlus, endPlus));
-            g2.setColor(Color.GREEN);
-            g2.draw(new Line2D.Double(initialMinus, endMinus));
 
+            g2.draw(new Line2D.Double(initial, end));
+            g2.setColor(Color.BLACK);
+            g2.setStroke(stroke1);
+            g2.draw(new Line2D.Double(initialVertical, endVertical));
+            //g2.draw(new Line2D.Double(initialHorizontal,endHorizontal));
         }
+        Point2D.Double initialVertical;
+        Point2D.Double endVertical;
+        //Point2D.Double initialHorizontal;
+        //Point2D.Double endHorizontal;
+        if (yMaximum > yCoordNumbers) {
+            initialVertical = new Point2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(listPoints.size() - 1).x * xLength),
+                    Y_AXIS_SECOND_Y_COORD);
+            endVertical = new Point2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(listPoints.size() - 1).x * xLength),
+                    Y_AXIS_SECOND_Y_COORD - ((listPoints.get(listPoints.size() - 1).y * yCoordNumbers / yMaximum) * yLength));
+            /*initialHorizontal = new Point2D.Double(X_AXIS_FIRST_X_COORD,
+             Y_AXIS_SECOND_Y_COORD - ((listPoints.get(listPoints.size()-1).y*yCoordNumbers/yMaximum) * yLength));
+             endHorizontal = new Point2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(listPoints.size()-1).x * xLength),
+             Y_AXIS_SECOND_Y_COORD - ((listPoints.get(listPoints.size()-1).y*yCoordNumbers/yMaximum) * yLength));*/
+        } else {
+            initialVertical = new Point2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(listPoints.size() - 1).x * xLength),
+                    Y_AXIS_SECOND_Y_COORD);
+            endVertical = new Point2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(listPoints.size() - 1).x * xLength),
+                    Y_AXIS_SECOND_Y_COORD - (listPoints.get(listPoints.size() - 1).y * yLength));
+            /*initialHorizontal = new Point2D.Double(X_AXIS_FIRST_X_COORD,
+             Y_AXIS_SECOND_Y_COORD - (listPoints.get(listPoints.size()-1).y * yLength));
+             endHorizontal = new Point2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(listPoints.size()-1).x * xLength),
+             Y_AXIS_SECOND_Y_COORD - (listPoints.get(listPoints.size()-1).y * yLength));*/
+        }
+        g2.draw(new Line2D.Double(initialVertical, endVertical));
+        //g2.draw(new Line2D.Double(initialHorizontal,endHorizontal));
         timer.start();
         revalidate();
     }
 
     /**
-     * Method that is triggered each s seconds in order to analize if the
-     * results file has changed.
+     * Method that is triggered each s seconds in order to analize if more data
+     * points were added.
      *
      * @param ae Action event that triggered the method.
      */
