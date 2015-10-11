@@ -60,8 +60,8 @@ class CartesianFrameSignal extends JFrame implements ItemListener, ActionListene
     /**
      * Default constructor of the class that will initialize the main panels.
      *
-     * @param signalFile Name of the file that contain the heart rate and oxygen
-     * consumption measured values.
+     * @param signalFile Name of the file that contain physiological signals
+     * measured values.
      */
     CartesianFrameSignal(String signalFile) {
         counterStep = 0;
@@ -390,7 +390,7 @@ class CartesianFrameSignal extends JFrame implements ItemListener, ActionListene
     @Override
     public void actionPerformed(ActionEvent ae) {
         if (ae.getSource() == timer) {
-            counterStep ++;
+            counterStep++;
             timer.start();
         }
     }
