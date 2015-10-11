@@ -28,7 +28,7 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 /**
- * Class that manages the heart rate and the oxygen consumption signals.
+ * Class that manages each physiological signal.
  *
  * @author aRosales
  */
@@ -119,6 +119,7 @@ class CartesianPanelSignal extends JPanel implements ActionListener {
         Point2D.Double origin = new Point2D.Double(counter, 0);
         listPoints.add(origin);
         counter++;
+        int counterRow = 0;
         try {
             br = new BufferedReader(new FileReader(csvFile));
             line = br.readLine();
@@ -149,13 +150,14 @@ class CartesianPanelSignal extends JPanel implements ActionListener {
              if ((line = br.readLine()) == null) {
              finish = true;
              }*/
-            while ((line = br.readLine()) != null) {
+            while ((line = br.readLine()) != null && counterRow<=CartesianFrameSignal.counterStep) {
                 String[] values = line.split(cvsSplitBy);
                 Double yValue;
                 yValue = Double.valueOf(values[column]);
                 Point2D.Double point = new Point2D.Double(counter, yValue);
                 listPoints.add(point);
                 counter++;
+                counterRow++;
             }
 
         } catch (FileNotFoundException e) {
@@ -391,13 +393,16 @@ class CartesianPanelSignal extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent ae) {
         if (ae.getSource() == timer) {
-            long newTimeStamp = file.lastModified();
+            /*long newTimeStamp = file.lastModified();
             if (timeStamp != newTimeStamp) {
                 timeStamp = newTimeStamp;
                 readFile();
                 revalidate();
                 repaint();
-            }
+            }*/
+            readFile();
+            revalidate();
+            repaint();
         }
     }
 

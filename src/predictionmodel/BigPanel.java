@@ -9,7 +9,7 @@ import java.awt.Dimension;
 import javax.swing.JPanel;
 
 /**
- * Panel that contains the plots of the heart rate and the oxygen consumption.
+ * Panel that contains the plots of the physiological signals.
  *
  * @author aRosales
  */
