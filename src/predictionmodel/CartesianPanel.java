@@ -203,23 +203,22 @@ class CartesianPanel extends JPanel implements ActionListener {
         g2.setFont(font1);
 
         // x-axis arrow
-        g2.drawLine(X_AXIS_FIRST_X_COORD + ((listPoints.size()+1) * xLength) - FIRST_LENGHT,
+        g2.drawLine(X_AXIS_FIRST_X_COORD + ((listPoints.size() + 1) * xLength) - FIRST_LENGHT,
                 X_AXIS_Y_COORD - SECOND_LENGHT,
-                X_AXIS_FIRST_X_COORD + ((listPoints.size()+1) * xLength), X_AXIS_Y_COORD);
-        g2.drawLine(X_AXIS_FIRST_X_COORD + ((listPoints.size()+1) * xLength) - FIRST_LENGHT,
+                X_AXIS_FIRST_X_COORD + ((listPoints.size() + 1) * xLength), X_AXIS_Y_COORD);
+        g2.drawLine(X_AXIS_FIRST_X_COORD + ((listPoints.size() + 1) * xLength) - FIRST_LENGHT,
                 X_AXIS_Y_COORD + SECOND_LENGHT,
-                X_AXIS_FIRST_X_COORD + ((listPoints.size()+1) * xLength), X_AXIS_Y_COORD);
+                X_AXIS_FIRST_X_COORD + ((listPoints.size() + 1) * xLength), X_AXIS_Y_COORD);
 
         // draw text "X" and draw text "Y"
-        g2.drawString("Step", X_AXIS_FIRST_X_COORD + ((listPoints.size()+1) * xLength),
+        g2.drawString("Step", X_AXIS_FIRST_X_COORD + ((listPoints.size() + 1) * xLength),
                 X_AXIS_Y_COORD + AXIS_STRING_DISTANCE);
-        if(predictedSignal.contains("HR")){
+        if (predictedSignal.contains("HR")) {
             g2.drawString(predictedSignal + " (bpm)", Y_AXIS_X_COORD - AXIS_STRING_DISTANCE,
-                Y_AXIS_DATA_Y_COORD);
-        }
-        else {
+                    Y_AXIS_DATA_Y_COORD);
+        } else {
             g2.drawString(predictedSignal + " (l/min)", Y_AXIS_X_COORD - AXIS_STRING_DISTANCE,
-                Y_AXIS_DATA_Y_COORD);
+                    Y_AXIS_DATA_Y_COORD);
         }
         g2.drawString("(0, 0)", X_AXIS_FIRST_X_COORD - AXIS_STRING_DISTANCE,
                 Y_AXIS_SECOND_Y_COORD + AXIS_STRING_DISTANCE);
@@ -228,19 +227,19 @@ class CartesianPanel extends JPanel implements ActionListener {
         g2.setFont(font2);
 
         // draw x-axis numbers
-        for (int i = 1; i <= listPoints.size()+1; i++) {
-            if(i<listPoints.size()+1){
+        for (int i = 1; i <= listPoints.size() + 1; i++) {
+            if (i < listPoints.size() + 1) {
                 g2.drawLine(X_AXIS_FIRST_X_COORD + (i * xLength),
                         X_AXIS_Y_COORD - SECOND_LENGHT,
                         X_AXIS_FIRST_X_COORD + (i * xLength),
                         X_AXIS_Y_COORD + SECOND_LENGHT);
             }
-                g2.drawLine(X_AXIS_FIRST_X_COORD + ((i) * xLength), X_AXIS_Y_COORD,
+            g2.drawLine(X_AXIS_FIRST_X_COORD + ((i) * xLength), X_AXIS_Y_COORD,
                     X_AXIS_FIRST_X_COORD + ((i - 1) * xLength), X_AXIS_Y_COORD);
         }
         g2.drawLine(X_AXIS_FIRST_X_COORD + (listPoints.size() * xLength), X_AXIS_Y_COORD,
                 X_AXIS_FIRST_X_COORD + ((listPoints.size() - 1) * xLength), X_AXIS_Y_COORD);
-        for (int i = 1; i < listPoints.size()+1; i++) {
+        for (int i = 1; i < listPoints.size() + 1; i++) {
             g2.drawString(Integer.toString(i),
                     X_AXIS_FIRST_X_COORD + (i * xLength) - 3,
                     X_AXIS_Y_COORD + AXIS_STRING_DISTANCE);
@@ -249,10 +248,10 @@ class CartesianPanel extends JPanel implements ActionListener {
         float division;
         if (yMaximum > yCoordNumbers) {
             Float max = (float) yMaximum;
-            yLength = (int)Math.ceil((Y_AXIS_SECOND_Y_COORD - Y_AXIS_FIRST_Y_COORD)
+            yLength = (int) Math.ceil((Y_AXIS_SECOND_Y_COORD - Y_AXIS_FIRST_Y_COORD)
                     / yCoordNumbers);
             division = max / yCoordNumbers;
-            division = (float)Math.ceil(division);
+            division = (float) Math.ceil(division);
             for (int i = 1; i < yCoordNumbers; i++) {
                 g2.drawLine(Y_AXIS_X_COORD - SECOND_LENGHT,
                         Y_AXIS_SECOND_Y_COORD - (i * yLength),
@@ -285,16 +284,34 @@ class CartesianPanel extends JPanel implements ActionListener {
         }
 
         Stroke stroke = new BasicStroke(2f);
-        if(listPoints.size()==1){
+        if (listPoints.size() == 1) {
             g2.setStroke(stroke);
             g2.setColor(titleColor);
             if (yMaximum > yCoordNumbers) {
+                g2.setColor(Color.RED);
+                g2.draw(new Ellipse2D.Double(X_AXIS_FIRST_X_COORD + (listErrorPlus.get(0).x * xLength) - (point_lenght / 2),
+                        Y_AXIS_SECOND_Y_COORD - ((listErrorPlus.get(0).y * yCoordNumbers / yMaximum) * yLength) - (point_lenght / 2),
+                        point_lenght, point_lenght));
+                g2.setColor(titleColor);
                 g2.draw(new Ellipse2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(0).x * xLength) - (point_lenght / 2),
                         Y_AXIS_SECOND_Y_COORD - ((listPoints.get(0).y * yCoordNumbers / yMaximum) * yLength) - (point_lenght / 2),
                         point_lenght, point_lenght));
+                g2.setColor(Color.GREEN);
+                g2.draw(new Ellipse2D.Double(X_AXIS_FIRST_X_COORD + (listErrorMinus.get(0).x * xLength) - (point_lenght / 2),
+                        Y_AXIS_SECOND_Y_COORD - ((listErrorMinus.get(0).y * yCoordNumbers / yMaximum) * yLength) - (point_lenght / 2),
+                        point_lenght, point_lenght));
             } else {
+                g2.setColor(Color.RED);
+                g2.draw(new Ellipse2D.Double(X_AXIS_FIRST_X_COORD + (listErrorPlus.get(0).x * xLength) - (point_lenght / 2),
+                        Y_AXIS_SECOND_Y_COORD - (listErrorPlus.get(0).y * yLength) - (point_lenght / 2),
+                        point_lenght, point_lenght));
+                g2.setColor(titleColor);
                 g2.draw(new Ellipse2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(0).x * xLength) - (point_lenght / 2),
                         Y_AXIS_SECOND_Y_COORD - (listPoints.get(0).y * yLength) - (point_lenght / 2),
+                        point_lenght, point_lenght));
+                g2.setColor(Color.GREEN);
+                g2.draw(new Ellipse2D.Double(X_AXIS_FIRST_X_COORD + (listErrorMinus.get(0).x * xLength) - (point_lenght / 2),
+                        Y_AXIS_SECOND_Y_COORD - (listErrorMinus.get(0).y * yLength) - (point_lenght / 2),
                         point_lenght, point_lenght));
             }
         }
@@ -322,8 +339,17 @@ class CartesianPanel extends JPanel implements ActionListener {
                 endMinus = new Point2D.Double(X_AXIS_FIRST_X_COORD + (listErrorMinus.get(i + 1).x * xLength),
                         Y_AXIS_SECOND_Y_COORD - ((listErrorMinus.get(i + 1).y * yCoordNumbers / yMaximum) * yLength));
 
+                g2.setColor(Color.RED);
+                g2.draw(new Ellipse2D.Double(X_AXIS_FIRST_X_COORD + (listErrorPlus.get(i).x * xLength) - (point_lenght / 2),
+                        Y_AXIS_SECOND_Y_COORD - ((listErrorPlus.get(i).y * yCoordNumbers / yMaximum) * yLength) - (point_lenght / 2),
+                        point_lenght, point_lenght));
+                g2.setColor(titleColor);
                 g2.draw(new Ellipse2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(i).x * xLength) - (point_lenght / 2),
                         Y_AXIS_SECOND_Y_COORD - ((listPoints.get(i).y * yCoordNumbers / yMaximum) * yLength) - (point_lenght / 2),
+                        point_lenght, point_lenght));
+                g2.setColor(Color.GREEN);
+                g2.draw(new Ellipse2D.Double(X_AXIS_FIRST_X_COORD + (listErrorMinus.get(i).x * xLength) - (point_lenght / 2),
+                        Y_AXIS_SECOND_Y_COORD - ((listErrorMinus.get(i).y * yCoordNumbers / yMaximum) * yLength) - (point_lenght / 2),
                         point_lenght, point_lenght));
             } else {
                 initial = new Point2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(i).x * xLength),
@@ -339,16 +365,55 @@ class CartesianPanel extends JPanel implements ActionListener {
                 endMinus = new Point2D.Double(X_AXIS_FIRST_X_COORD + (listErrorMinus.get(i + 1).x * xLength),
                         Y_AXIS_SECOND_Y_COORD - (listErrorMinus.get(i + 1).y * yLength));
 
+                g2.setColor(Color.RED);
+                g2.draw(new Ellipse2D.Double(X_AXIS_FIRST_X_COORD + (listErrorPlus.get(i).x * xLength) - (point_lenght / 2),
+                        Y_AXIS_SECOND_Y_COORD - (listErrorPlus.get(i).y * yLength) - (point_lenght / 2),
+                        point_lenght, point_lenght));
+                g2.setColor(titleColor);
                 g2.draw(new Ellipse2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(i).x * xLength) - (point_lenght / 2),
                         Y_AXIS_SECOND_Y_COORD - (listPoints.get(i).y * yLength) - (point_lenght / 2),
                         point_lenght, point_lenght));
+                g2.setColor(Color.GREEN);
+                g2.draw(new Ellipse2D.Double(X_AXIS_FIRST_X_COORD + (listErrorMinus.get(i).x * xLength) - (point_lenght / 2),
+                        Y_AXIS_SECOND_Y_COORD - (listErrorMinus.get(i).y * yLength) - (point_lenght / 2),
+                        point_lenght, point_lenght));
             }
+            g2.setColor(titleColor);
             g2.draw(new Line2D.Double(initial, end));
             g2.setColor(Color.RED);
             g2.draw(new Line2D.Double(initialPlus, endPlus));
             g2.setColor(Color.GREEN);
             g2.draw(new Line2D.Double(initialMinus, endMinus));
 
+        }
+        g2.setStroke(stroke);
+        g2.setColor(titleColor);
+        if (yMaximum > yCoordNumbers) {
+            g2.setColor(Color.RED);
+            g2.draw(new Ellipse2D.Double(X_AXIS_FIRST_X_COORD + (listErrorPlus.get(listErrorPlus.size()-1).x * xLength) - (point_lenght / 2),
+                    Y_AXIS_SECOND_Y_COORD - ((listErrorPlus.get(listErrorPlus.size()-1).y * yCoordNumbers / yMaximum) * yLength) - (point_lenght / 2),
+                    point_lenght, point_lenght));
+            g2.setColor(titleColor);
+            g2.draw(new Ellipse2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(listPoints.size()-1).x * xLength) - (point_lenght / 2),
+                    Y_AXIS_SECOND_Y_COORD - ((listPoints.get(listPoints.size()-1).y * yCoordNumbers / yMaximum) * yLength) - (point_lenght / 2),
+                    point_lenght, point_lenght));
+            g2.setColor(Color.GREEN);
+            g2.draw(new Ellipse2D.Double(X_AXIS_FIRST_X_COORD + (listErrorMinus.get(listErrorMinus.size()-1).x * xLength) - (point_lenght / 2),
+                    Y_AXIS_SECOND_Y_COORD - ((listErrorMinus.get(listErrorMinus.size()-1).y * yCoordNumbers / yMaximum) * yLength) - (point_lenght / 2),
+                    point_lenght, point_lenght));
+        } else {
+            g2.setColor(Color.RED);
+            g2.draw(new Ellipse2D.Double(X_AXIS_FIRST_X_COORD + (listErrorPlus.get(listErrorPlus.size()-1).x * xLength) - (point_lenght / 2),
+                    Y_AXIS_SECOND_Y_COORD - (listErrorPlus.get(listErrorPlus.size()-1).y * yLength) - (point_lenght / 2),
+                    point_lenght, point_lenght));
+            g2.setColor(titleColor);
+            g2.draw(new Ellipse2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(listPoints.size()-1).x * xLength) - (point_lenght / 2),
+                    Y_AXIS_SECOND_Y_COORD - (listPoints.get(listPoints.size()-1).y * yLength) - (point_lenght / 2),
+                    point_lenght, point_lenght));
+            g2.setColor(Color.GREEN);
+            g2.draw(new Ellipse2D.Double(X_AXIS_FIRST_X_COORD + (listErrorMinus.get(listErrorMinus.size()-1).x * xLength) - (point_lenght / 2),
+                    Y_AXIS_SECOND_Y_COORD - (listErrorMinus.get(listErrorMinus.size()-1).y * yLength) - (point_lenght / 2),
+                    point_lenght, point_lenght));
         }
         timer.start();
         revalidate();
