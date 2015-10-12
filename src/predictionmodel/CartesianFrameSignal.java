@@ -8,6 +8,7 @@ package predictionmodel;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -55,6 +56,7 @@ class CartesianFrameSignal extends JFrame implements ItemListener, ActionListene
     private Container contHR;
     private Container contVO2;
     private String signalFile;
+    private int fontSize;
     private final Timer timer = new Timer(1000, this);
 
     /**
@@ -65,6 +67,7 @@ class CartesianFrameSignal extends JFrame implements ItemListener, ActionListene
      */
     CartesianFrameSignal(String signalFile) {
         counterStep = 0;
+        fontSize = 15;
         this.signalFile = signalFile;
         setSize(1000, 800);
         initializeOptions();
@@ -72,6 +75,7 @@ class CartesianFrameSignal extends JFrame implements ItemListener, ActionListene
 
         //Adding the general title
         JLabel labelTitle = new JLabel();
+        labelTitle.setFont(new Font ("Times", Font.BOLD, fontSize+5));
         labelTitle.setText("MEDICAL PHYSIOLOGICAL SIGNALS");
         labelTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
         add(labelTitle);
@@ -83,6 +87,9 @@ class CartesianFrameSignal extends JFrame implements ItemListener, ActionListene
         JScrollPane bigScrollPanel = new JScrollPane(bigPanel);
         add(bigScrollPanel);
         add(containerChecks);
+        
+        //Default selection
+        VO2.doClick();
         timer.start();
     }
 
@@ -105,6 +112,7 @@ class CartesianFrameSignal extends JFrame implements ItemListener, ActionListene
                     contFIO2.setLayout(new BoxLayout(contFIO2, BoxLayout.Y_AXIS));
 
                     JLabel title = new JLabel();
+                    title.setFont(new Font ("Times", Font.BOLD, fontSize));
                     title.setAlignmentX(Component.CENTER_ALIGNMENT);
                     title.setText("Fraction of inspired oxygen (FIO2)");
                     contFIO2.add(title);
@@ -129,6 +137,7 @@ class CartesianFrameSignal extends JFrame implements ItemListener, ActionListene
                     contFEO2.setLayout(new BoxLayout(contFEO2, BoxLayout.Y_AXIS));
 
                     JLabel title = new JLabel();
+                    title.setFont(new Font ("Times", Font.BOLD, fontSize));
                     title.setAlignmentX(Component.CENTER_ALIGNMENT);
                     title.setText("Fraction of expired oxygen (FEO2)");
                     contFEO2.add(title);
@@ -153,6 +162,7 @@ class CartesianFrameSignal extends JFrame implements ItemListener, ActionListene
                     contFECO2.setLayout(new BoxLayout(contFECO2, BoxLayout.Y_AXIS));
 
                     JLabel title = new JLabel();
+                    title.setFont(new Font ("Times", Font.BOLD, fontSize));
                     title.setAlignmentX(Component.CENTER_ALIGNMENT);
                     title.setText("Fraction of expired carbon dioxide (FECO2)");
                     contFECO2.add(title);
@@ -177,6 +187,7 @@ class CartesianFrameSignal extends JFrame implements ItemListener, ActionListene
                     contFETCO2.setLayout(new BoxLayout(contFETCO2, BoxLayout.Y_AXIS));
 
                     JLabel title = new JLabel();
+                    title.setFont(new Font ("Times", Font.BOLD, fontSize));
                     title.setAlignmentX(Component.CENTER_ALIGNMENT);
                     title.setText("Fraction of end-tidal carbon dioxide (FETCO2)");
                     contFETCO2.add(title);
@@ -201,6 +212,7 @@ class CartesianFrameSignal extends JFrame implements ItemListener, ActionListene
                     contFETO2.setLayout(new BoxLayout(contFETO2, BoxLayout.Y_AXIS));
 
                     JLabel title = new JLabel();
+                    title.setFont(new Font ("Times", Font.BOLD, fontSize));
                     title.setAlignmentX(Component.CENTER_ALIGNMENT);
                     title.setText("Fraction of end-tidal oxygen (FETO2)");
                     contFETO2.add(title);
@@ -225,6 +237,7 @@ class CartesianFrameSignal extends JFrame implements ItemListener, ActionListene
                     contVE.setLayout(new BoxLayout(contVE, BoxLayout.Y_AXIS));
 
                     JLabel title = new JLabel();
+                    title.setFont(new Font ("Times", Font.BOLD, fontSize));
                     title.setAlignmentX(Component.CENTER_ALIGNMENT);
                     title.setText("Ventilation (VE)");
                     contVE.add(title);
@@ -249,6 +262,7 @@ class CartesianFrameSignal extends JFrame implements ItemListener, ActionListene
                     contTI.setLayout(new BoxLayout(contTI, BoxLayout.Y_AXIS));
 
                     JLabel title = new JLabel();
+                    title.setFont(new Font ("Times", Font.BOLD, fontSize));
                     title.setAlignmentX(Component.CENTER_ALIGNMENT);
                     title.setText("Inspiratory time (IT)");
                     contTI.add(title);
@@ -273,6 +287,7 @@ class CartesianFrameSignal extends JFrame implements ItemListener, ActionListene
                     contTE.setLayout(new BoxLayout(contTE, BoxLayout.Y_AXIS));
 
                     JLabel title = new JLabel();
+                    title.setFont(new Font ("Times", Font.BOLD, fontSize));
                     title.setAlignmentX(Component.CENTER_ALIGNMENT);
                     title.setText("Expiratory time (ET)");
                     contTE.add(title);
@@ -297,6 +312,7 @@ class CartesianFrameSignal extends JFrame implements ItemListener, ActionListene
                     contHR.setLayout(new BoxLayout(contHR, BoxLayout.Y_AXIS));
 
                     JLabel title = new JLabel();
+                    title.setFont(new Font ("Times", Font.BOLD, fontSize));
                     title.setAlignmentX(Component.CENTER_ALIGNMENT);
                     title.setText("Heart rate (HR)");
                     contHR.add(title);
@@ -321,6 +337,7 @@ class CartesianFrameSignal extends JFrame implements ItemListener, ActionListene
                     contVO2.setLayout(new BoxLayout(contVO2, BoxLayout.Y_AXIS));
 
                     JLabel title = new JLabel();
+                    title.setFont(new Font ("Times", Font.BOLD, fontSize));
                     title.setAlignmentX(Component.CENTER_ALIGNMENT);
                     title.setText("Oxygen consumption (VO2)");
                     contVO2.add(title);
@@ -346,24 +363,34 @@ class CartesianFrameSignal extends JFrame implements ItemListener, ActionListene
     public void initializeOptions() {
 
         FIO2 = new JCheckBox("Fraction of inspired oxygen (FIO2)");
+        FIO2.setFont(new Font ("Times", Font.PLAIN, fontSize));
         FIO2.addItemListener(this);
         FEO2 = new JCheckBox("Fraction of expired oxygen (FEO2)");
+        FEO2.setFont(new Font ("Times", Font.PLAIN, fontSize));
         FEO2.addItemListener(this);
         FECO2 = new JCheckBox("Fraction of expired carbon dioxide (FECO2)");
+        FECO2.setFont(new Font ("Times", Font.PLAIN, fontSize));
         FECO2.addItemListener(this);
         FETCO2 = new JCheckBox("Fraction of end-tidal carbon dioxide (FETCO2)");
+        FETCO2.setFont(new Font ("Times", Font.PLAIN, fontSize));
         FETCO2.addItemListener(this);
         FETO2 = new JCheckBox("Fraction of end-tidal oxygen (FETO2)");
+        FETO2.setFont(new Font ("Times", Font.PLAIN, fontSize));
         FETO2.addItemListener(this);
         VE = new JCheckBox("Ventilation (VE)");
+        VE.setFont(new Font ("Times", Font.PLAIN, fontSize));
         VE.addItemListener(this);
         TI = new JCheckBox("Inspiratory time (IT)");
+        TI.setFont(new Font ("Times", Font.PLAIN, fontSize));
         TI.addItemListener(this);
         TE = new JCheckBox("Expiratory time (ET)");
+        TE.setFont(new Font ("Times", Font.PLAIN, fontSize));
         TE.addItemListener(this);
         HR = new JCheckBox("Heart rate (HR)");
+        HR.setFont(new Font ("Times", Font.PLAIN, fontSize));
         HR.addItemListener(this);
         VO2 = new JCheckBox("Oxygen consumption (VO2)");
+        VO2.setFont(new Font ("Times", Font.PLAIN, fontSize));
         VO2.addItemListener(this);
 
         containerChecks = new JPanel();

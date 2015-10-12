@@ -8,6 +8,7 @@ package predictionmodel;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Font;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -21,6 +22,7 @@ import javax.swing.JScrollPane;
 class CartesianFrame extends JFrame {
 
     private CartesianPanel results;
+    private int fontSize;
 
     /**
      * Constructor of the class that initializes the initial plots with the
@@ -32,11 +34,13 @@ class CartesianFrame extends JFrame {
      * @param error Measurement of error used in the prediction (MAE or RMSE)
      */
     public CartesianFrame(String signal, String approach, String technique, String error) {
-        setSize(1000, 600);
+        fontSize = 15;
+        setSize(1000, 650);
         setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
         String generalTitle = String.format("%s          %s          %s          %s", signal, approach, technique, error);
         //Adding the general title
         JLabel labelTitle = new JLabel();
+        labelTitle.setFont(new Font ("Times", Font.BOLD, fontSize+5));
         labelTitle.setText("PREDICTION RESULTS");
         labelTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
         add(labelTitle);
@@ -45,6 +49,7 @@ class CartesianFrame extends JFrame {
         container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
 
         JLabel title = new JLabel();
+        title.setFont(new Font ("Times", Font.BOLD, fontSize));
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
         title.setText(generalTitle);
 
@@ -60,16 +65,19 @@ class CartesianFrame extends JFrame {
         add(container);
 
         JLabel plusMAE = new JLabel();
+        plusMAE.setFont(new Font ("Times", Font.BOLD, fontSize+5));
         plusMAE.setAlignmentX(Component.CENTER_ALIGNMENT);
         plusMAE.setText(signal + " + " + error);
         plusMAE.setForeground(Color.RED);
 
         JLabel avg = new JLabel();
+        avg.setFont(new Font ("Times", Font.BOLD, fontSize+5));
         avg.setAlignmentX(Component.CENTER_ALIGNMENT);
         avg.setText(signal);
         avg.setForeground(Color.BLUE);
 
         JLabel minusMAE = new JLabel();
+        minusMAE.setFont(new Font ("Times", Font.BOLD, fontSize+5));
         minusMAE.setAlignmentX(Component.CENTER_ALIGNMENT);
         minusMAE.setText(signal + " - " + error);
         minusMAE.setForeground(Color.GREEN);

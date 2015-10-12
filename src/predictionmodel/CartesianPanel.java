@@ -41,7 +41,7 @@ class CartesianPanel extends JPanel implements ActionListener {
     public int X_AXIS_Y_COORD = 400;
 
     // y-axis coord constants
-    public static final int Y_AXIS_DATA_Y_COORD = 20;
+    public static final int Y_AXIS_DATA_Y_COORD = 15;
     public static final int Y_AXIS_FIRST_Y_COORD = 30;
     public int Y_AXIS_SECOND_Y_COORD = 400;
     public static final int Y_AXIS_X_COORD = 50;
@@ -69,6 +69,7 @@ class CartesianPanel extends JPanel implements ActionListener {
     private int yMaximum;
     private int columnAVG;
     private int xLength;
+    private int fontSize;
     private Color titleColor;
     private long timeStamp;
     private File file;
@@ -82,6 +83,7 @@ class CartesianPanel extends JPanel implements ActionListener {
      * @param signal Predicted signal.
      */
     public void setAxes(Color color, String signal) {
+        fontSize = 15;
         xLength = (X_AXIS_SECOND_X_COORD - X_AXIS_FIRST_X_COORD)
                 / xCoordNumbers;
         counter = 0;
@@ -199,7 +201,7 @@ class CartesianPanel extends JPanel implements ActionListener {
                 Y_AXIS_SECOND_Y_COORD - (ORIGIN_COORDINATE_LENGHT / 2),
                 ORIGIN_COORDINATE_LENGHT, ORIGIN_COORDINATE_LENGHT);
 
-        Font font1 = new Font(g2.getFont().getFontName(), Font.BOLD, 12);
+        Font font1 = new Font("Times", Font.BOLD, fontSize);
         g2.setFont(font1);
 
         // x-axis arrow
@@ -223,7 +225,7 @@ class CartesianPanel extends JPanel implements ActionListener {
         g2.drawString("(0, 0)", X_AXIS_FIRST_X_COORD - AXIS_STRING_DISTANCE,
                 Y_AXIS_SECOND_Y_COORD + AXIS_STRING_DISTANCE);
 
-        Font font2 = new Font(g2.getFont().getFontName(), Font.PLAIN, 10);
+        Font font2 = new Font("Times", Font.PLAIN, fontSize);
         g2.setFont(font2);
 
         // draw x-axis numbers
