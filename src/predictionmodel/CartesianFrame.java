@@ -78,21 +78,21 @@ class CartesianFrame extends JFrame {
         blank.setText(" ");
         
         JLabel plusMAE = new JLabel();
-        plusMAE.setFont(new Font ("Times", Font.PLAIN, fontSize));
+        plusMAE.setFont(new Font ("Times", Font.BOLD, fontSize));
         plusMAE.setAlignmentX(Component.CENTER_ALIGNMENT);
-        plusMAE.setText(signal + " + MAE");
+        plusMAE.setText(" ---- " + signal + " + MAE");
         plusMAE.setForeground(Color.RED);
 
         JLabel avg = new JLabel();
-        avg.setFont(new Font ("Times", Font.PLAIN, fontSize));
+        avg.setFont(new Font ("Times", Font.BOLD, fontSize));
         avg.setAlignmentX(Component.CENTER_ALIGNMENT);
-        avg.setText(signal);
+        avg.setText(" ---- " + signal);
         avg.setForeground(Color.BLUE);
 
         JLabel minusMAE = new JLabel();
-        minusMAE.setFont(new Font ("Times", Font.PLAIN, fontSize));
+        minusMAE.setFont(new Font ("Times", Font.BOLD, fontSize));
         minusMAE.setAlignmentX(Component.CENTER_ALIGNMENT);
-        minusMAE.setText(signal + " - MAE");
+        minusMAE.setText(" ---- " + signal + " - MAE");
         minusMAE.setForeground(Color.GREEN);
 
         add(predictedValue);

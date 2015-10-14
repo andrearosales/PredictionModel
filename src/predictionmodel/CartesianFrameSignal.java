@@ -14,6 +14,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
@@ -33,6 +37,11 @@ class CartesianFrameSignal extends JFrame implements ItemListener, ActionListene
     public static int counterStep;
 
     private ArrayList<String> signals;
+    private ArrayList<String> nameSignals;
+    private ArrayList<Integer> minValueSignals;
+    private ArrayList<Integer> maxValueSignals;
+    private ArrayList<Integer> numDivisionSignals;
+    private String[] defaultSignals;
     private BigPanel bigPanel;
     private JPanel containerChecks;
     private JCheckBox FIO2;
@@ -57,7 +66,13 @@ class CartesianFrameSignal extends JFrame implements ItemListener, ActionListene
     private Container contVO2;
     private String signalFile;
     private String predictedSignal;
+    private String[] xAxis;
     private int fontSize;
+    private int numberSignals = 10;
+    private int numberWindows;
+    private int yCoordinate;
+    private int heightPlot;
+    private int durationStep;
     private final Timer timer = new Timer(1000, this);
 
     /**
@@ -72,6 +87,60 @@ class CartesianFrameSignal extends JFrame implements ItemListener, ActionListene
         this.signalFile = signalFile;
         this.predictedSignal = predictedSignal;
         setSize(1000, 800);
+        
+        String configurationFile = "Parameter_Configuration.txt";
+        BufferedReader br = null;
+        String line;
+        String txtSplitBy = " ";
+        
+        nameSignals = new ArrayList<>();
+        minValueSignals = new ArrayList<>();
+        maxValueSignals = new ArrayList<>();
+        numDivisionSignals = new ArrayList<>();
+
+        try {
+            br = new BufferedReader(new FileReader(configurationFile));
+            for(int i=0;i<11;i++){
+                br.readLine();
+            }
+            for(int i=0; i<numberSignals;i++){
+                line = br.readLine();
+                String[] values = line.split(txtSplitBy);
+                nameSignals.add(values[0]);
+                minValueSignals.add(Integer.valueOf(values[1]));
+                maxValueSignals.add(Integer.valueOf(values[2]));
+                numDivisionSignals.add(Integer.valueOf(values[3]));
+            }
+            br.readLine(); //Read the window configuration title
+            line = br.readLine(); //Read the line with all the information
+            String[] values = line.split(txtSplitBy);
+            numberWindows = Integer.valueOf(values[0]);
+            yCoordinate = Integer.valueOf(values[1]);
+            heightPlot = Integer.valueOf(values[2]);
+            br.readLine(); //Read the default signals title
+            line = br.readLine(); //Read the line with all the default signals
+            defaultSignals = line.split(txtSplitBy);
+            br.readLine(); //Read the default signals title
+            line = br.readLine(); //Read the duration of prediction step title
+            durationStep = Integer.valueOf(line);
+            br.readLine(); //Read the x axis title title
+            line = br.readLine(); //Read the x axis information
+            xAxis = line.split(txtSplitBy); //As a vector if later on the min/sec configuration is implemented.
+            
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        
         initializeOptions();
         setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 
@@ -82,8 +151,14 @@ class CartesianFrameSignal extends JFrame implements ItemListener, ActionListene
         labelTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
         add(labelTitle);
 
+        CartesianPanelSignal.X_AXIS_Y_COORD = yCoordinate;
+        CartesianPanelSignal.Y_AXIS_SECOND_Y_COORD = yCoordinate;     
+        CartesianPanelSignal.xAxis = xAxis[0];
+        CartesianPanelSignal.durationPrediction = durationStep;
+        
         //Adding the greater container
         bigPanel = new BigPanel(labelTitle.getHeight());
+        bigPanel.Y_AXIS_AMOUNT = heightPlot;
         bigPanel.setLayout(new BoxLayout(bigPanel, BoxLayout.Y_AXIS));
 
         JScrollPane bigScrollPanel = new JScrollPane(bigPanel);
@@ -91,10 +166,29 @@ class CartesianFrameSignal extends JFrame implements ItemListener, ActionListene
         add(containerChecks);
         
         //Default selection
-        if(predictedSignal.contains("HR"))
-            HR.doClick();
-        else
-            VO2.doClick();
+        for(int i = 0;i<numberWindows;i++){
+            String signal = defaultSignals[i];
+            if(signal.contains("FIO2"))
+                FIO2.doClick();
+            else if(signal.contains("FEO2"))
+                FEO2.doClick();
+            else if(signal.contains("FECO2"))
+                FECO2.doClick();
+            else if(signal.contains("FETCO2"))
+                FETCO2.doClick();
+            else if(signal.contains("FETO2"))
+                FETO2.doClick();
+            else if(signal.contains("VE"))
+                VE.doClick();
+            else if(signal.contains("TI"))
+                TI.doClick();
+            else if(signal.contains("TE"))
+                TE.doClick();
+            else if(signal.contains("HR"))
+                HR.doClick();
+            else 
+                VO2.doClick();
+        }
         timer.start();
     }
 
@@ -124,7 +218,8 @@ class CartesianFrameSignal extends JFrame implements ItemListener, ActionListene
 
                     CartesianPanelSignal panel = new CartesianPanelSignal();
                     panel.setAlignmentX(Component.LEFT_ALIGNMENT);
-                    panel.setAxes("FIO2", 0, 22, Color.BLACK, signalFile);
+                    //panel.setAxes("FIO2", 0, 22, Color.BLACK, signalFile);
+                    panel.setAxes(nameSignals.get(0), minValueSignals.get(0), maxValueSignals.get(0), numDivisionSignals.get(0), Color.BLACK, signalFile);
                     panel.setBackground(Color.white);
                     JScrollPane scroll = new JScrollPane(panel);
                     contFIO2.add(scroll);
@@ -149,7 +244,8 @@ class CartesianFrameSignal extends JFrame implements ItemListener, ActionListene
 
                     CartesianPanelSignal panel = new CartesianPanelSignal();
                     panel.setAlignmentX(Component.LEFT_ALIGNMENT);
-                    panel.setAxes("FEO2", 0, 22, Color.LIGHT_GRAY, signalFile);
+                    //panel.setAxes("FEO2", 0, 22, Color.LIGHT_GRAY, signalFile);
+                    panel.setAxes(nameSignals.get(1), minValueSignals.get(1), maxValueSignals.get(1), numDivisionSignals.get(1), Color.GRAY, signalFile);
                     panel.setBackground(Color.white);
                     JScrollPane scroll = new JScrollPane(panel);
                     contFEO2.add(scroll);
@@ -174,7 +270,8 @@ class CartesianFrameSignal extends JFrame implements ItemListener, ActionListene
 
                     CartesianPanelSignal panel = new CartesianPanelSignal();
                     panel.setAlignmentX(Component.LEFT_ALIGNMENT);
-                    panel.setAxes("FECO2", 0, 8, Color.YELLOW, signalFile);
+                    //panel.setAxes("FECO2", 0, 8, Color.YELLOW, signalFile);
+                    panel.setAxes(nameSignals.get(2), minValueSignals.get(2), maxValueSignals.get(2), numDivisionSignals.get(2), Color.YELLOW, signalFile);
                     panel.setBackground(Color.white);
                     JScrollPane scroll = new JScrollPane(panel);
                     contFECO2.add(scroll);
@@ -199,7 +296,8 @@ class CartesianFrameSignal extends JFrame implements ItemListener, ActionListene
 
                     CartesianPanelSignal panel = new CartesianPanelSignal();
                     panel.setAlignmentX(Component.LEFT_ALIGNMENT);
-                    panel.setAxes("FETCO2", 0, 10, Color.PINK, signalFile);
+                    //panel.setAxes("FETCO2", 0, 10, Color.PINK, signalFile);
+                    panel.setAxes(nameSignals.get(3), minValueSignals.get(3), maxValueSignals.get(3), numDivisionSignals.get(3), Color.PINK, signalFile);
                     panel.setBackground(Color.white);
                     JScrollPane scroll = new JScrollPane(panel);
                     contFETCO2.add(scroll);
@@ -224,7 +322,8 @@ class CartesianFrameSignal extends JFrame implements ItemListener, ActionListene
 
                     CartesianPanelSignal panel = new CartesianPanelSignal();
                     panel.setAlignmentX(Component.LEFT_ALIGNMENT);
-                    panel.setAxes("FETO2", 0, 21, Color.ORANGE, signalFile);
+                    //panel.setAxes("FETO2", 0, 21, Color.ORANGE, signalFile);
+                    panel.setAxes(nameSignals.get(4), minValueSignals.get(4), maxValueSignals.get(4), numDivisionSignals.get(4), Color.ORANGE, signalFile);
                     panel.setBackground(Color.white);
                     JScrollPane scroll = new JScrollPane(panel);
                     contFETO2.add(scroll);
@@ -249,7 +348,8 @@ class CartesianFrameSignal extends JFrame implements ItemListener, ActionListene
 
                     CartesianPanelSignal panel = new CartesianPanelSignal();
                     panel.setAlignmentX(Component.LEFT_ALIGNMENT);
-                    panel.setAxes("VE", 0, 234, Color.MAGENTA, signalFile);
+                    //panel.setAxes("VE", 0, 234, Color.MAGENTA, signalFile);
+                    panel.setAxes(nameSignals.get(5), minValueSignals.get(5), maxValueSignals.get(5), numDivisionSignals.get(5), Color.MAGENTA, signalFile);
                     panel.setBackground(Color.white);
                     JScrollPane scroll = new JScrollPane(panel);
                     contVE.add(scroll);
@@ -274,7 +374,8 @@ class CartesianFrameSignal extends JFrame implements ItemListener, ActionListene
 
                     CartesianPanelSignal panel = new CartesianPanelSignal();
                     panel.setAlignmentX(Component.LEFT_ALIGNMENT);
-                    panel.setAxes("TI", 0, 6, Color.GRAY, signalFile);
+                    //panel.setAxes("TI", 0, 6, Color.GRAY, signalFile);
+                    panel.setAxes(nameSignals.get(6), minValueSignals.get(6), maxValueSignals.get(6), numDivisionSignals.get(6), Color.GRAY, signalFile);
                     panel.setBackground(Color.white);
                     JScrollPane scroll = new JScrollPane(panel);
                     contTI.add(scroll);
@@ -299,7 +400,8 @@ class CartesianFrameSignal extends JFrame implements ItemListener, ActionListene
 
                     CartesianPanelSignal panel = new CartesianPanelSignal();
                     panel.setAlignmentX(Component.LEFT_ALIGNMENT);
-                    panel.setAxes("TE", 0, 12, Color.CYAN, signalFile);
+                    //panel.setAxes("TE", 0, 12, Color.CYAN, signalFile);
+                    panel.setAxes(nameSignals.get(7), minValueSignals.get(7), maxValueSignals.get(7), numDivisionSignals.get(7), Color.CYAN, signalFile);
                     panel.setBackground(Color.white);
                     JScrollPane scroll = new JScrollPane(panel);
                     contTE.add(scroll);
@@ -324,7 +426,8 @@ class CartesianFrameSignal extends JFrame implements ItemListener, ActionListene
 
                     CartesianPanelSignal panel = new CartesianPanelSignal();
                     panel.setAlignmentX(Component.LEFT_ALIGNMENT);
-                    panel.setAxes("HR", 33, 215, Color.RED, signalFile);
+                    //panel.setAxes("HR", 33, 215, Color.RED, signalFile);
+                    panel.setAxes(nameSignals.get(8), minValueSignals.get(8), maxValueSignals.get(8), numDivisionSignals.get(8), Color.RED, signalFile);
                     panel.setBackground(Color.white);
                     JScrollPane scroll = new JScrollPane(panel);
                     contHR.add(scroll);
@@ -349,7 +452,8 @@ class CartesianFrameSignal extends JFrame implements ItemListener, ActionListene
 
                     CartesianPanelSignal panel = new CartesianPanelSignal();
                     panel.setAlignmentX(Component.LEFT_ALIGNMENT);
-                    panel.setAxes("VO2", 0, 6411, Color.BLUE, signalFile);
+                    //panel.setAxes("VO2", 0, 6411, Color.BLUE, signalFile);
+                    panel.setAxes(nameSignals.get(9), minValueSignals.get(9), maxValueSignals.get(9), numDivisionSignals.get(9), Color.BLUE, signalFile);
                     panel.setBackground(Color.white);
                     JScrollPane scroll = new JScrollPane(panel);
                     contVO2.add(scroll);

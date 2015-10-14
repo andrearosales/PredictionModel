@@ -451,6 +451,6 @@ class CartesianPanel extends JPanel implements ActionListener {
      */
     @Override
     public Dimension getPreferredSize() {
-        return new Dimension((X_AXIS_FIRST_X_COORD * 2) + (listPoints.size() * xLength), Y_AXIS_SECOND_Y_COORD + Y_AXIS_X_COORD);
+        return new Dimension((X_AXIS_FIRST_X_COORD * 2) + (listPoints.size() * xLength) + 10, Y_AXIS_SECOND_Y_COORD + Y_AXIS_X_COORD);
     }
 }

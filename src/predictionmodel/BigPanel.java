@@ -17,7 +17,7 @@ public class BigPanel extends JPanel{
     /**
      * Specific height of each plot.
      */
-    public static int Y_AXIS_AMOUNT = 270; //It was 450
+    public static int Y_AXIS_AMOUNT; //It was 450
 
     /**
      * Initial width of each plot.
