@@ -33,11 +33,10 @@ class CartesianFrame extends JFrame {
      * @param technique Technique that was used for the prediction (ANN or SVM)
      * @param error Measurement of error used in the prediction (MAE or RMSE)
      */
-    public CartesianFrame(String signal, String approach, String technique, String error) {
+    public CartesianFrame(String signal, String approach, String technique) {
         fontSize = 15;
-        setSize(1000, 650);
+        setSize(1000, 670);
         setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
-        String generalTitle = String.format("%s          %s          %s          %s", signal, approach, technique, error);
         //Adding the general title
         JLabel labelTitle = new JLabel();
         labelTitle.setFont(new Font ("Times", Font.BOLD, fontSize+5));
@@ -48,40 +47,58 @@ class CartesianFrame extends JFrame {
         Container container = new Container();
         container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
 
-        JLabel title = new JLabel();
-        title.setFont(new Font ("Times", Font.BOLD, fontSize));
-        title.setAlignmentX(Component.CENTER_ALIGNMENT);
-        title.setText(generalTitle);
-
         results = new CartesianPanel();
         results.setAlignmentX(Component.LEFT_ALIGNMENT);
         results.setBackground(Color.WHITE);
         results.setAxes(Color.BLUE, signal);
 
-        container.add(title);
         JScrollPane scroll = new JScrollPane(results);
         container.add(scroll);
 
         add(container);
 
+        JLabel predictedValue = new JLabel();
+        predictedValue.setFont(new Font ("Times", Font.PLAIN, fontSize));
+        predictedValue.setAlignmentX(Component.CENTER_ALIGNMENT);
+        predictedValue.setText("Predicted value: " + signal);
+        
+        JLabel predictionModel = new JLabel();
+        predictionModel.setFont(new Font ("Times", Font.PLAIN, fontSize));
+        predictionModel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        predictionModel.setText("Prediction model: " + technique);
+        
+        JLabel knowledgeBase = new JLabel();
+        knowledgeBase.setFont(new Font ("Times", Font.PLAIN, fontSize));
+        knowledgeBase.setAlignmentX(Component.CENTER_ALIGNMENT);
+        knowledgeBase.setText("Knowledge base: " + approach);
+        
+        JLabel blank = new JLabel();
+        blank.setFont(new Font ("Times", Font.PLAIN, fontSize));
+        blank.setAlignmentX(Component.CENTER_ALIGNMENT);
+        blank.setText(" ");
+        
         JLabel plusMAE = new JLabel();
-        plusMAE.setFont(new Font ("Times", Font.BOLD, fontSize+5));
+        plusMAE.setFont(new Font ("Times", Font.PLAIN, fontSize));
         plusMAE.setAlignmentX(Component.CENTER_ALIGNMENT);
-        plusMAE.setText(signal + " + " + error);
+        plusMAE.setText(signal + " + MAE");
         plusMAE.setForeground(Color.RED);
 
         JLabel avg = new JLabel();
-        avg.setFont(new Font ("Times", Font.BOLD, fontSize+5));
+        avg.setFont(new Font ("Times", Font.PLAIN, fontSize));
         avg.setAlignmentX(Component.CENTER_ALIGNMENT);
         avg.setText(signal);
         avg.setForeground(Color.BLUE);
 
         JLabel minusMAE = new JLabel();
-        minusMAE.setFont(new Font ("Times", Font.BOLD, fontSize+5));
+        minusMAE.setFont(new Font ("Times", Font.PLAIN, fontSize));
         minusMAE.setAlignmentX(Component.CENTER_ALIGNMENT);
-        minusMAE.setText(signal + " - " + error);
+        minusMAE.setText(signal + " - MAE");
         minusMAE.setForeground(Color.GREEN);
 
+        add(predictedValue);
+        add(predictionModel);
+        add(knowledgeBase);
+        add(blank);
         add(plusMAE);
         add(avg);
         add(minusMAE);

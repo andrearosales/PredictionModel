@@ -5,6 +5,8 @@ Knowledge Base
 Multiple-test
 Predicted value
 VO2peak
+Signal File
+0004_300.csv
 Physiological Signal Configuration
 Name Min_Value Max_Value Number_Divisions_Y
 FIO2 0 22 5
