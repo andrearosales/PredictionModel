@@ -38,13 +38,14 @@ class CartesianPanelSignal extends JPanel implements ActionListener {
     // x-axis coord constants
     public static final int X_AXIS_FIRST_X_COORD = 50;
     public int X_AXIS_SECOND_X_COORD = 400;
-    public int X_AXIS_Y_COORD = 400;
+    public int X_AXIS_Y_COORD = 200; //It was 400
 
     // y-axis coord constants
     public static final int Y_AXIS_DATA_Y_COORD = 15;
     public static final int Y_AXIS_FIRST_Y_COORD = 30;
-    public int Y_AXIS_SECOND_Y_COORD = 400;
+    public int Y_AXIS_SECOND_Y_COORD = 200; //It was 400
     public static final int Y_AXIS_X_COORD = 50;
+    public static final int Y_AXIS_HEIGH_COORD = 25;
 
     //Arrows of axis are represented with "hipotenuse" of triangle
     //Definition of length of cathetas of the triangle
@@ -62,14 +63,12 @@ class CartesianPanelSignal extends JPanel implements ActionListener {
     private String dataY;
     private String fileName;
     private double counter;
-    private boolean finish;
-    private final int xCoordNumbers = 15;
-    private final int yCoordNumbers = 10;
+    private final int xCoordNumbers = 10;
+    private final int yCoordNumbers = 5; //It was 10
     private int yMinimum;
     private int yMaximum;
     private int xLength;
     private int column;
-    private int counterTop;
     private int fontSize;
     private Color titleColor;
     private long timeStamp;
@@ -91,8 +90,6 @@ class CartesianPanelSignal extends JPanel implements ActionListener {
         xLength = (X_AXIS_SECOND_X_COORD - X_AXIS_FIRST_X_COORD)
                 / xCoordNumbers;
         counter = 0;
-        counterTop = 0;
-        finish = false;
         listPoints = new ArrayList<>();
         Point2D.Double origin = new Point2D.Double(counter, 0);
         listPoints.add(origin);
@@ -135,32 +132,29 @@ class CartesianPanelSignal extends JPanel implements ActionListener {
                     count++;
                 }
             }
-            /*for (int i = 1; i <= counterTop; i++) {
-             line = br.readLine();
-             }
-             int top = 0;
-             while ((line = br.readLine()) != null && top < xCoordNumbers) {
+            //update each second
+            while ((line = br.readLine()) != null && counterRow<=CartesianFrameSignal.counterStep) {
              String[] values = line.split(cvsSplitBy);
              Double yValue;
              yValue = Double.valueOf(values[column]);
              Point2D.Double point = new Point2D.Double(counter, yValue);
              listPoints.add(point);
              counter++;
-             counterTop++;
-             top++;
+             counterRow++;
              }
-             if ((line = br.readLine()) == null) {
-             finish = true;
-             }*/
-            while ((line = br.readLine()) != null && counterRow<=CartesianFrameSignal.counterStep) {
+            //update each step
+            /*while ((line = br.readLine()) != null) {
                 String[] values = line.split(cvsSplitBy);
                 Double yValue;
+                Double xValue;
+                xValue = Double.valueOf(values[0]);
                 yValue = Double.valueOf(values[column]);
-                Point2D.Double point = new Point2D.Double(counter, yValue);
-                listPoints.add(point);
-                counter++;
-                counterRow++;
-            }
+                if (xValue <= 120 * (CartesianFrameSignal.counterStep)) { //120 because the workload increases each 2 minuts (60*2)
+                    Point2D.Double point = new Point2D.Double(counter, yValue);
+                    listPoints.add(point);
+                    counter++;
+                }
+            }*/
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -197,10 +191,7 @@ class CartesianPanelSignal extends JPanel implements ActionListener {
         super.paintComponent(g);
 
         Graphics2D g2 = (Graphics2D) g;
-        
-        //Font font = new Font(g2.getFont().getFontName(), Font.BOLD, fontSize);
-        //g2.setFont(font);
-        
+
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
 
@@ -236,39 +227,31 @@ class CartesianPanelSignal extends JPanel implements ActionListener {
         // draw text "X" and draw text "Y"
         g2.drawString("X", X_AXIS_FIRST_X_COORD + (listPoints.size() * xLength),
                 X_AXIS_Y_COORD + AXIS_STRING_DISTANCE);
-        if (dataY.contains("FIO2")){
+        if (dataY.contains("FIO2")) {
             g2.drawString(dataY + " (%)", Y_AXIS_X_COORD - AXIS_STRING_DISTANCE,
                     Y_AXIS_DATA_Y_COORD);
-        }
-        else if (dataY.contains("FEO2")){
+        } else if (dataY.contains("FEO2")) {
             g2.drawString(dataY + " (%)", Y_AXIS_X_COORD - AXIS_STRING_DISTANCE,
                     Y_AXIS_DATA_Y_COORD);
-        }
-        else if (dataY.contains("FECO2")){
+        } else if (dataY.contains("FECO2")) {
             g2.drawString(dataY + " (%)", Y_AXIS_X_COORD - AXIS_STRING_DISTANCE,
                     Y_AXIS_DATA_Y_COORD);
-        }
-        else if (dataY.contains("FETCO2")){
+        } else if (dataY.contains("FETCO2")) {
             g2.drawString(dataY + " (%)", Y_AXIS_X_COORD - AXIS_STRING_DISTANCE,
                     Y_AXIS_DATA_Y_COORD);
-        }
-        else if (dataY.contains("FETO2")){
+        } else if (dataY.contains("FETO2")) {
             g2.drawString(dataY + " (%)", Y_AXIS_X_COORD - AXIS_STRING_DISTANCE,
                     Y_AXIS_DATA_Y_COORD);
-        }
-        else if (dataY.contains("VE")){
+        } else if (dataY.contains("VE")) {
             g2.drawString(dataY + " (l/min)", Y_AXIS_X_COORD - AXIS_STRING_DISTANCE,
                     Y_AXIS_DATA_Y_COORD);
-        }
-        else if (dataY.contains("TI")){
+        } else if (dataY.contains("TI")) {
             g2.drawString(dataY + " (sec)", Y_AXIS_X_COORD - AXIS_STRING_DISTANCE,
                     Y_AXIS_DATA_Y_COORD);
-        }
-        else if (dataY.contains("TE")){
+        } else if (dataY.contains("TE")) {
             g2.drawString(dataY + " (sec)", Y_AXIS_X_COORD - AXIS_STRING_DISTANCE,
                     Y_AXIS_DATA_Y_COORD);
-        } 
-        else if (dataY.contains("HR")) {
+        } else if (dataY.contains("HR")) {
             g2.drawString(dataY + " (bpm)", Y_AXIS_X_COORD - AXIS_STRING_DISTANCE,
                     Y_AXIS_DATA_Y_COORD);
         } else {
@@ -346,8 +329,6 @@ class CartesianPanelSignal extends JPanel implements ActionListener {
             Point2D.Double end;
             Point2D.Double initialVertical;
             Point2D.Double endVertical;
-            //Point2D.Double initialHorizontal;
-            //Point2D.Double endHorizontal;
 
             if (yMaximum > yCoordNumbers) {
                 initial = new Point2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(i).x * xLength),
@@ -362,11 +343,6 @@ class CartesianPanelSignal extends JPanel implements ActionListener {
                 g2.draw(new Ellipse2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(i).x * xLength) - (point_lenght / 2),
                         Y_AXIS_SECOND_Y_COORD - ((listPoints.get(i).y * yCoordNumbers / yMaximum) * yLength) - (point_lenght / 2),
                         point_lenght, point_lenght));
-
-                /*initialHorizontal = new Point2D.Double(X_AXIS_FIRST_X_COORD,
-                 Y_AXIS_SECOND_Y_COORD - ((listPoints.get(i).y*yCoordNumbers/yMaximum) * yLength));
-                 endHorizontal = new Point2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(i).x * xLength),
-                 Y_AXIS_SECOND_Y_COORD - ((listPoints.get(i).y*yCoordNumbers/yMaximum) * yLength));*/
             } else {
                 initial = new Point2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(i).x * xLength),
                         Y_AXIS_SECOND_Y_COORD - (listPoints.get(i).y * yLength));
@@ -380,22 +356,15 @@ class CartesianPanelSignal extends JPanel implements ActionListener {
                 g2.draw(new Ellipse2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(i).x * xLength) - (point_lenght / 2),
                         Y_AXIS_SECOND_Y_COORD - (listPoints.get(i).y * yLength) - (point_lenght / 2),
                         point_lenght, point_lenght));
-                /*initialHorizontal = new Point2D.Double(X_AXIS_FIRST_X_COORD,
-                 Y_AXIS_SECOND_Y_COORD - (listPoints.get(i).y * yLength));
-                 endHorizontal = new Point2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(i).x * xLength),
-                 Y_AXIS_SECOND_Y_COORD - (listPoints.get(i).y * yLength));*/
             }
 
             g2.draw(new Line2D.Double(initial, end));
             g2.setColor(Color.BLACK);
             g2.setStroke(stroke1);
             g2.draw(new Line2D.Double(initialVertical, endVertical));
-            //g2.draw(new Line2D.Double(initialHorizontal,endHorizontal));
         }
         Point2D.Double initialVertical;
         Point2D.Double endVertical;
-        //Point2D.Double initialHorizontal;
-        //Point2D.Double endHorizontal;
         if (yMaximum > yCoordNumbers) {
             initialVertical = new Point2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(listPoints.size() - 1).x * xLength),
                     Y_AXIS_SECOND_Y_COORD);
@@ -410,13 +379,8 @@ class CartesianPanelSignal extends JPanel implements ActionListener {
                     Y_AXIS_SECOND_Y_COORD);
             endVertical = new Point2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(listPoints.size() - 1).x * xLength),
                     Y_AXIS_SECOND_Y_COORD - (listPoints.get(listPoints.size() - 1).y * yLength));
-            /*initialHorizontal = new Point2D.Double(X_AXIS_FIRST_X_COORD,
-             Y_AXIS_SECOND_Y_COORD - (listPoints.get(listPoints.size()-1).y * yLength));
-             endHorizontal = new Point2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(listPoints.size()-1).x * xLength),
-             Y_AXIS_SECOND_Y_COORD - (listPoints.get(listPoints.size()-1).y * yLength));*/
         }
         g2.draw(new Line2D.Double(initialVertical, endVertical));
-        //g2.draw(new Line2D.Double(initialHorizontal,endHorizontal));
         timer.start();
         revalidate();
     }
@@ -431,12 +395,12 @@ class CartesianPanelSignal extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent ae) {
         if (ae.getSource() == timer) {
             /*long newTimeStamp = file.lastModified();
-            if (timeStamp != newTimeStamp) {
-                timeStamp = newTimeStamp;
-                readFile();
-                revalidate();
-                repaint();
-            }*/
+             if (timeStamp != newTimeStamp) {
+             timeStamp = newTimeStamp;
+             readFile();
+             revalidate();
+             repaint();
+             }*/
             readFile();
             revalidate();
             repaint();
@@ -450,6 +414,7 @@ class CartesianPanelSignal extends JPanel implements ActionListener {
      */
     @Override
     public Dimension getPreferredSize() {
-        return new Dimension((X_AXIS_FIRST_X_COORD * 2) + (listPoints.size() * xLength), Y_AXIS_SECOND_Y_COORD + Y_AXIS_X_COORD);
+        //return new Dimension((X_AXIS_FIRST_X_COORD * 2) + (listPoints.size() * xLength), Y_AXIS_SECOND_Y_COORD + Y_AXIS_X_COORD);
+        return new Dimension((X_AXIS_FIRST_X_COORD * 2) + (listPoints.size() * xLength), Y_AXIS_SECOND_Y_COORD );
     }
 }

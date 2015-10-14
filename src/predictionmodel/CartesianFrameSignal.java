@@ -56,6 +56,7 @@ class CartesianFrameSignal extends JFrame implements ItemListener, ActionListene
     private Container contHR;
     private Container contVO2;
     private String signalFile;
+    private String predictedSignal;
     private int fontSize;
     private final Timer timer = new Timer(1000, this);
 
@@ -65,10 +66,11 @@ class CartesianFrameSignal extends JFrame implements ItemListener, ActionListene
      * @param signalFile Name of the file that contain physiological signals
      * measured values.
      */
-    CartesianFrameSignal(String signalFile) {
+    CartesianFrameSignal(String signalFile, String predictedSignal) {
         counterStep = 0;
         fontSize = 15;
         this.signalFile = signalFile;
+        this.predictedSignal = predictedSignal;
         setSize(1000, 800);
         initializeOptions();
         setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
@@ -76,7 +78,7 @@ class CartesianFrameSignal extends JFrame implements ItemListener, ActionListene
         //Adding the general title
         JLabel labelTitle = new JLabel();
         labelTitle.setFont(new Font ("Times", Font.BOLD, fontSize+5));
-        labelTitle.setText("MEDICAL PHYSIOLOGICAL SIGNALS");
+        labelTitle.setText("PHYSIOLOGICAL SIGNALS MONITORING");
         labelTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
         add(labelTitle);
 
@@ -89,7 +91,10 @@ class CartesianFrameSignal extends JFrame implements ItemListener, ActionListene
         add(containerChecks);
         
         //Default selection
-        VO2.doClick();
+        if(predictedSignal.contains("HR"))
+            HR.doClick();
+        else
+            VO2.doClick();
         timer.start();
     }
 
@@ -418,6 +423,7 @@ class CartesianFrameSignal extends JFrame implements ItemListener, ActionListene
     public void actionPerformed(ActionEvent ae) {
         if (ae.getSource() == timer) {
             counterStep++;
+            //counterStep = CartesianPanel.predictionStep;
             timer.start();
         }
     }

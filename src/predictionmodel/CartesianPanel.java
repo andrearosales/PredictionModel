@@ -57,6 +57,8 @@ class CartesianPanel extends JPanel implements ActionListener {
 
     // distance of coordinate strings from axis
     public static final int AXIS_STRING_DISTANCE = 30;
+    
+    public static int predictionStep;
 
     private ArrayList<Point2D.Double> listPoints;
     private ArrayList<Point2D.Double> listErrorPlus;
@@ -95,6 +97,7 @@ class CartesianPanel extends JPanel implements ActionListener {
         titleColor = color;
         file = new File("MAE_result.csv");
         timeStamp = file.lastModified();
+        predictionStep = listPoints.size();
         readFile();
     }
 
@@ -144,6 +147,7 @@ class CartesianPanel extends JPanel implements ActionListener {
             }
             yMinimum = (int) Math.ceil(min);
             yMaximum = (int) Math.ceil(max);
+            predictionStep = listPoints.size();
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
