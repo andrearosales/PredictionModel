@@ -58,7 +58,7 @@ class CartesianPanelSignal extends JPanel implements ActionListener {
 
     //Distance of coordinate strings from axis
     public static final int AXIS_STRING_DISTANCE = 30;
-    
+
     public static String xAxis;
     public static int durationPrediction;
 
@@ -141,7 +141,7 @@ class CartesianPanelSignal extends JPanel implements ActionListener {
                 }
             }
             //update each second
-            /*while ((line = br.readLine()) != null && counterRow<=CartesianFrameSignal.counterStep) {
+            /*while ((line = br.readLine()) != null && counterRow<=CartesianPanel.predictionStep) {
              String[] values = line.split(cvsSplitBy);
              Double yValue;
              yValue = Double.valueOf(values[column]);
@@ -157,7 +157,7 @@ class CartesianPanelSignal extends JPanel implements ActionListener {
                 Double xValue;
                 xValue = Double.valueOf(values[0]);
                 yValue = Double.valueOf(values[column]);
-                if (xValue <= durationPrediction * (CartesianFrameSignal.counterStep)) { //Because the workload increases each durationPrediction
+                if (xValue <= durationPrediction * (CartesianPanel.predictionStep)) { //Because the workload increases each durationPrediction
                     Point2D.Double point = new Point2D.Double(counter, yValue);
                     listPoints.add(point);
                     listTimes.add(xValue);
@@ -184,8 +184,9 @@ class CartesianPanelSignal extends JPanel implements ActionListener {
      * Method that prints the stored points so far. Used for debugging purposes.
      */
     public void printPoints() {
+        System.out.println("listsize: " + listPoints.size());
         for (int i = 0; i < listPoints.size(); i++) {
-            System.out.println("x: " + listPoints.get(i).x + " y: " + listPoints.get(i).y);
+            System.out.println("x: " + listPoints.get(i).x + " y: " + listPoints.get(i).y + " time: " + listTimes.get(i));
         }
     }
 
@@ -198,13 +199,12 @@ class CartesianPanelSignal extends JPanel implements ActionListener {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-
         Graphics2D g2 = (Graphics2D) g;
 
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
 
-        // x-axis
+        // y-axis
         g2.drawLine(Y_AXIS_X_COORD, Y_AXIS_FIRST_Y_COORD,
                 Y_AXIS_X_COORD, Y_AXIS_SECOND_Y_COORD);
 
@@ -226,15 +226,15 @@ class CartesianPanelSignal extends JPanel implements ActionListener {
         g2.setFont(font1);
 
         // x-axis arrow
-        g2.drawLine(X_AXIS_FIRST_X_COORD + (listPoints.size() * xLength) - FIRST_LENGHT,
+        g2.drawLine(X_AXIS_FIRST_X_COORD + ((CartesianPanel.predictionStep + 1) * xLength) - FIRST_LENGHT,
                 X_AXIS_Y_COORD - SECOND_LENGHT,
-                X_AXIS_FIRST_X_COORD + (listPoints.size() * xLength), X_AXIS_Y_COORD);
-        g2.drawLine(X_AXIS_FIRST_X_COORD + (listPoints.size() * xLength) - FIRST_LENGHT,
+                X_AXIS_FIRST_X_COORD + ((CartesianPanel.predictionStep + 1) * xLength), X_AXIS_Y_COORD);
+        g2.drawLine(X_AXIS_FIRST_X_COORD + ((CartesianPanel.predictionStep + 1) * xLength) - FIRST_LENGHT,
                 X_AXIS_Y_COORD + SECOND_LENGHT,
-                X_AXIS_FIRST_X_COORD + (listPoints.size() * xLength), X_AXIS_Y_COORD);
+                X_AXIS_FIRST_X_COORD + ((CartesianPanel.predictionStep + 1) * xLength), X_AXIS_Y_COORD);
 
         // draw text "X" and draw text "Y"
-        g2.drawString(xAxis, X_AXIS_FIRST_X_COORD + (listPoints.size() * xLength),
+        g2.drawString(xAxis, X_AXIS_FIRST_X_COORD + ((CartesianPanel.predictionStep + 1) * xLength),
                 X_AXIS_Y_COORD + AXIS_STRING_DISTANCE);
         if (dataY.contains("FIO2")) {
             g2.drawString(dataY + " (%)", Y_AXIS_X_COORD - AXIS_STRING_DISTANCE,
@@ -274,7 +274,7 @@ class CartesianPanelSignal extends JPanel implements ActionListener {
         g2.setFont(font2);
 
         // draw x-axis numbers
-        for (int i = 1; i < listPoints.size(); i++) {
+        for (int i = 1; i <= CartesianPanel.predictionStep; i++) {
             g2.drawLine(X_AXIS_FIRST_X_COORD + (i * xLength),
                     X_AXIS_Y_COORD - SECOND_LENGHT,
                     X_AXIS_FIRST_X_COORD + (i * xLength),
@@ -282,13 +282,15 @@ class CartesianPanelSignal extends JPanel implements ActionListener {
             g2.drawLine(X_AXIS_FIRST_X_COORD + ((i) * xLength), X_AXIS_Y_COORD,
                     X_AXIS_FIRST_X_COORD + ((i - 1) * xLength), X_AXIS_Y_COORD);
         }
-        g2.drawLine(X_AXIS_FIRST_X_COORD + (listPoints.size() * xLength), X_AXIS_Y_COORD,
-                X_AXIS_FIRST_X_COORD + ((listPoints.size() - 1) * xLength), X_AXIS_Y_COORD);
-        for (int i = 1; i < listPoints.size(); i++) {
+        g2.drawLine(X_AXIS_FIRST_X_COORD + ((CartesianPanel.predictionStep + 1) * xLength), X_AXIS_Y_COORD,
+                X_AXIS_FIRST_X_COORD + ((CartesianPanel.predictionStep) * xLength), X_AXIS_Y_COORD);
+        for (int i = 1; i <= CartesianPanel.predictionStep; i++) {
             g2.drawString(Integer.toString(i),
                     X_AXIS_FIRST_X_COORD + (i * xLength) - 3,
                     X_AXIS_Y_COORD + AXIS_STRING_DISTANCE);
         }
+
+        // draw y-axis numbers
         int yLength;
         float division;
         if (yMaximum > yCoordNumbers) {
@@ -327,69 +329,49 @@ class CartesianPanelSignal extends JPanel implements ActionListener {
                     Y_AXIS_X_COORD - AXIS_STRING_DISTANCE,
                     Y_AXIS_SECOND_Y_COORD - (yMaximum * yLength));
         }
+
         Stroke stroke = new BasicStroke(2f);
         float[] dashingPattern1 = {2f, 2f};
         Stroke stroke1 = new BasicStroke(0.5f, BasicStroke.CAP_BUTT,
                 BasicStroke.JOIN_MITER, 1.0f, dashingPattern1, 2.0f);
-        for (int i = 0; i < listPoints.size() - 1; i++) {
-            g2.setStroke(stroke);
-            g2.setColor(titleColor);
-            Point2D.Double initial;
-            Point2D.Double end;
-            Point2D.Double initialVertical;
-            Point2D.Double endVertical;
+        ArrayList<Double> listPointsDraw = new ArrayList<>();
 
-            if (yMaximum > yCoordNumbers) {
-                initial = new Point2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(i).x * xLength),
-                        Y_AXIS_SECOND_Y_COORD - ((listPoints.get(i).y * yCoordNumbers / yMaximum) * yLength));
-                end = new Point2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(i + 1).x * xLength),
-                        Y_AXIS_SECOND_Y_COORD - ((listPoints.get(i + 1).y * yCoordNumbers / yMaximum) * yLength));
-                initialVertical = new Point2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(i).x * xLength),
-                        Y_AXIS_SECOND_Y_COORD);
-                endVertical = new Point2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(i).x * xLength),
-                        Y_AXIS_SECOND_Y_COORD - ((listPoints.get(i).y * yCoordNumbers / yMaximum) * yLength));
-
-                g2.draw(new Ellipse2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(i).x * xLength) - (point_lenght / 2),
-                        Y_AXIS_SECOND_Y_COORD - ((listPoints.get(i).y * yCoordNumbers / yMaximum) * yLength) - (point_lenght / 2),
-                        point_lenght, point_lenght));
-            } else {
-                initial = new Point2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(i).x * xLength),
-                        Y_AXIS_SECOND_Y_COORD - (listPoints.get(i).y * yLength));
-                end = new Point2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(i + 1).x * xLength),
-                        Y_AXIS_SECOND_Y_COORD - (listPoints.get(i + 1).y * yLength));
-                initialVertical = new Point2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(i).x * xLength),
-                        Y_AXIS_SECOND_Y_COORD);
-                endVertical = new Point2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(i).x * xLength),
-                        Y_AXIS_SECOND_Y_COORD - (listPoints.get(i).y * yLength));
-
-                g2.draw(new Ellipse2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(i).x * xLength) - (point_lenght / 2),
-                        Y_AXIS_SECOND_Y_COORD - (listPoints.get(i).y * yLength) - (point_lenght / 2),
-                        point_lenght, point_lenght));
+        //for (int i = 0; i < CartesianPanel.predictionStep; i++) {
+        for (int i = 0; i < 20; i++) {
+            for (int j = 0; j < listTimes.size(); j++) {
+                if ((listTimes.get(j) >= (durationPrediction * i)) && (listTimes.get(j) < (durationPrediction * (i + 1)))) {
+                    listPointsDraw.add(listPoints.get(j).y);
+                }
             }
 
-            g2.draw(new Line2D.Double(initial, end));
-            g2.setColor(Color.BLACK);
-            g2.setStroke(stroke1);
-            g2.draw(new Line2D.Double(initialVertical, endVertical));
+            float subDivision = xLength / listPointsDraw.size();
+            int counterSubdivision = 0;
+            for (int k = 0; k < listPointsDraw.size() - 1; k++) {
+                g2.setStroke(stroke);
+                g2.setColor(titleColor);
+                Point2D.Double initial;
+                Point2D.Double end;
+
+                if (yMaximum > yCoordNumbers) {
+                    initial = new Point2D.Double(X_AXIS_FIRST_X_COORD + (i * xLength) + (counterSubdivision * subDivision),
+                            Y_AXIS_SECOND_Y_COORD - ((listPointsDraw.get(k) * yCoordNumbers / yMaximum) * yLength));
+                    end = new Point2D.Double(X_AXIS_FIRST_X_COORD + (i * xLength) + ((counterSubdivision + 1) * subDivision),
+                            Y_AXIS_SECOND_Y_COORD - ((listPointsDraw.get(k + 1) * yCoordNumbers / yMaximum) * yLength));
+                } else {
+                    initial = new Point2D.Double(X_AXIS_FIRST_X_COORD + (i * xLength) + (counterSubdivision * subDivision),
+                            Y_AXIS_SECOND_Y_COORD - (listPointsDraw.get(k) * yLength));
+                    end = new Point2D.Double(X_AXIS_FIRST_X_COORD + (i * xLength) + ((counterSubdivision + 1) * subDivision),
+                            Y_AXIS_SECOND_Y_COORD - (listPointsDraw.get(k + 1) * yLength));
+                }
+
+                g2.draw(new Line2D.Double(initial, end));
+                g2.setColor(Color.BLACK);
+                g2.setStroke(stroke1);
+                counterSubdivision++;
+            }
+            listPointsDraw.clear();
         }
-        Point2D.Double initialVertical;
-        Point2D.Double endVertical;
-        if (yMaximum > yCoordNumbers) {
-            initialVertical = new Point2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(listPoints.size() - 1).x * xLength),
-                    Y_AXIS_SECOND_Y_COORD);
-            endVertical = new Point2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(listPoints.size() - 1).x * xLength),
-                    Y_AXIS_SECOND_Y_COORD - ((listPoints.get(listPoints.size() - 1).y * yCoordNumbers / yMaximum) * yLength));
-            /*initialHorizontal = new Point2D.Double(X_AXIS_FIRST_X_COORD,
-             Y_AXIS_SECOND_Y_COORD - ((listPoints.get(listPoints.size()-1).y*yCoordNumbers/yMaximum) * yLength));
-             endHorizontal = new Point2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(listPoints.size()-1).x * xLength),
-             Y_AXIS_SECOND_Y_COORD - ((listPoints.get(listPoints.size()-1).y*yCoordNumbers/yMaximum) * yLength));*/
-        } else {
-            initialVertical = new Point2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(listPoints.size() - 1).x * xLength),
-                    Y_AXIS_SECOND_Y_COORD);
-            endVertical = new Point2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(listPoints.size() - 1).x * xLength),
-                    Y_AXIS_SECOND_Y_COORD - (listPoints.get(listPoints.size() - 1).y * yLength));
-        }
-        g2.draw(new Line2D.Double(initialVertical, endVertical));
+
         timer.start();
         revalidate();
     }
@@ -424,6 +406,6 @@ class CartesianPanelSignal extends JPanel implements ActionListener {
     @Override
     public Dimension getPreferredSize() {
         //return new Dimension((X_AXIS_FIRST_X_COORD * 2) + (listPoints.size() * xLength), Y_AXIS_SECOND_Y_COORD + Y_AXIS_X_COORD);
-        return new Dimension((X_AXIS_FIRST_X_COORD * 2) + (listPoints.size() * xLength), Y_AXIS_SECOND_Y_COORD );
+        return new Dimension((X_AXIS_FIRST_X_COORD * 2) + (CartesianPanel.predictionStep * xLength) + 10, Y_AXIS_SECOND_Y_COORD);
     }
 }

@@ -32,9 +32,7 @@ import javax.swing.Timer;
  *
  * @author aRosales
  */
-class CartesianFrameSignal extends JFrame implements ItemListener, ActionListener {
-
-    public static int counterStep;
+class CartesianFrameSignal extends JFrame implements ItemListener {
 
     private ArrayList<String> signals;
     private ArrayList<String> nameSignals;
@@ -73,7 +71,6 @@ class CartesianFrameSignal extends JFrame implements ItemListener, ActionListene
     private int yCoordinate;
     private int heightPlot;
     private int durationStep;
-    private final Timer timer = new Timer(1000, this);
 
     /**
      * Default constructor of the class that will initialize the main panels.
@@ -82,7 +79,6 @@ class CartesianFrameSignal extends JFrame implements ItemListener, ActionListene
      * measured values.
      */
     CartesianFrameSignal(String signalFile, String predictedSignal) {
-        counterStep = 0;
         fontSize = 15;
         this.signalFile = signalFile;
         this.predictedSignal = predictedSignal;
@@ -166,7 +162,7 @@ class CartesianFrameSignal extends JFrame implements ItemListener, ActionListene
         add(containerChecks);
         
         //Default selection
-        for(int i = 0;i<numberWindows;i++){
+        for(int i = 0;i<1;i++){
             String signal = defaultSignals[i];
             if(signal.contains("FIO2"))
                 FIO2.doClick();
@@ -189,7 +185,6 @@ class CartesianFrameSignal extends JFrame implements ItemListener, ActionListene
             else 
                 VO2.doClick();
         }
-        timer.start();
     }
 
     /**
@@ -515,21 +510,6 @@ class CartesianFrameSignal extends JFrame implements ItemListener, ActionListene
         containerChecks.add(HR);
         containerChecks.add(VO2);
 
-    }
-
-    /**
-     * Method that is triggered each s seconds in order to emulate the monitored
-     * physiological signals.
-     *
-     * @param ae Action event that triggered the method.
-     */
-    @Override
-    public void actionPerformed(ActionEvent ae) {
-        if (ae.getSource() == timer) {
-            counterStep++;
-            //counterStep = CartesianPanel.predictionStep;
-            timer.start();
-        }
     }
 
     /**
