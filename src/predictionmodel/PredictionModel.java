@@ -5,13 +5,11 @@
  */
 package predictionmodel;
 
-import java.awt.geom.Point2D;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import javax.swing.SwingUtilities;
-import static predictionmodel.CartesianPanel.predictionStep;
 
 /**
  * Main class of the project. Runs the panel with the results of the prediction.
@@ -70,7 +68,7 @@ public class PredictionModel {
             @Override
             public void run() {
                 CartesianFrame frame = new CartesianFrame(signalF, approachF, techniqueF);
-                CartesianFrameSignal frameS = new CartesianFrameSignal(signalFileF, signalF);
+                CartesianFrameSignal frameS = new CartesianFrameSignal(signalFileF);
                 frame.showUI();
                 frameS.showUI();
             }

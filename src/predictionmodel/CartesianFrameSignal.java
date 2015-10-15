@@ -10,8 +10,6 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.BufferedReader;
@@ -25,7 +23,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.Timer;
 
 /**
  * Class that plots the selected physiological signals.
@@ -34,7 +31,6 @@ import javax.swing.Timer;
  */
 class CartesianFrameSignal extends JFrame implements ItemListener {
 
-    private ArrayList<String> signals;
     private ArrayList<String> nameSignals;
     private ArrayList<Integer> minValueSignals;
     private ArrayList<Integer> maxValueSignals;
@@ -63,7 +59,6 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
     private Container contHR;
     private Container contVO2;
     private String signalFile;
-    private String predictedSignal;
     private String[] xAxis;
     private int fontSize;
     private int numberSignals = 10;
@@ -78,10 +73,9 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
      * @param signalFile Name of the file that contain physiological signals
      * measured values.
      */
-    CartesianFrameSignal(String signalFile, String predictedSignal) {
+    CartesianFrameSignal(String signalFile) {
         fontSize = 15;
         this.signalFile = signalFile;
-        this.predictedSignal = predictedSignal;
         setSize(1000, 800);
         
         String configurationFile = "Parameter_Configuration.txt";
@@ -154,7 +148,7 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
         
         //Adding the greater container
         bigPanel = new BigPanel(labelTitle.getHeight());
-        bigPanel.Y_AXIS_AMOUNT = heightPlot;
+        BigPanel.Y_AXIS_AMOUNT = heightPlot;
         bigPanel.setLayout(new BoxLayout(bigPanel, BoxLayout.Y_AXIS));
 
         JScrollPane bigScrollPanel = new JScrollPane(bigPanel);
@@ -162,7 +156,7 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
         add(containerChecks);
         
         //Default selection
-        for(int i = 0;i<1;i++){
+        for(int i = 0;i<numberWindows;i++){
             String signal = defaultSignals[i];
             if(signal.contains("FIO2"))
                 FIO2.doClick();
@@ -213,7 +207,6 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
 
                     CartesianPanelSignal panel = new CartesianPanelSignal();
                     panel.setAlignmentX(Component.LEFT_ALIGNMENT);
-                    //panel.setAxes("FIO2", 0, 22, Color.BLACK, signalFile);
                     panel.setAxes(nameSignals.get(0), minValueSignals.get(0), maxValueSignals.get(0), numDivisionSignals.get(0), Color.BLACK, signalFile);
                     panel.setBackground(Color.white);
                     JScrollPane scroll = new JScrollPane(panel);
@@ -239,7 +232,6 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
 
                     CartesianPanelSignal panel = new CartesianPanelSignal();
                     panel.setAlignmentX(Component.LEFT_ALIGNMENT);
-                    //panel.setAxes("FEO2", 0, 22, Color.LIGHT_GRAY, signalFile);
                     panel.setAxes(nameSignals.get(1), minValueSignals.get(1), maxValueSignals.get(1), numDivisionSignals.get(1), Color.GRAY, signalFile);
                     panel.setBackground(Color.white);
                     JScrollPane scroll = new JScrollPane(panel);
@@ -265,7 +257,6 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
 
                     CartesianPanelSignal panel = new CartesianPanelSignal();
                     panel.setAlignmentX(Component.LEFT_ALIGNMENT);
-                    //panel.setAxes("FECO2", 0, 8, Color.YELLOW, signalFile);
                     panel.setAxes(nameSignals.get(2), minValueSignals.get(2), maxValueSignals.get(2), numDivisionSignals.get(2), Color.YELLOW, signalFile);
                     panel.setBackground(Color.white);
                     JScrollPane scroll = new JScrollPane(panel);
@@ -291,7 +282,6 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
 
                     CartesianPanelSignal panel = new CartesianPanelSignal();
                     panel.setAlignmentX(Component.LEFT_ALIGNMENT);
-                    //panel.setAxes("FETCO2", 0, 10, Color.PINK, signalFile);
                     panel.setAxes(nameSignals.get(3), minValueSignals.get(3), maxValueSignals.get(3), numDivisionSignals.get(3), Color.PINK, signalFile);
                     panel.setBackground(Color.white);
                     JScrollPane scroll = new JScrollPane(panel);
@@ -317,7 +307,6 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
 
                     CartesianPanelSignal panel = new CartesianPanelSignal();
                     panel.setAlignmentX(Component.LEFT_ALIGNMENT);
-                    //panel.setAxes("FETO2", 0, 21, Color.ORANGE, signalFile);
                     panel.setAxes(nameSignals.get(4), minValueSignals.get(4), maxValueSignals.get(4), numDivisionSignals.get(4), Color.ORANGE, signalFile);
                     panel.setBackground(Color.white);
                     JScrollPane scroll = new JScrollPane(panel);
@@ -343,7 +332,6 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
 
                     CartesianPanelSignal panel = new CartesianPanelSignal();
                     panel.setAlignmentX(Component.LEFT_ALIGNMENT);
-                    //panel.setAxes("VE", 0, 234, Color.MAGENTA, signalFile);
                     panel.setAxes(nameSignals.get(5), minValueSignals.get(5), maxValueSignals.get(5), numDivisionSignals.get(5), Color.MAGENTA, signalFile);
                     panel.setBackground(Color.white);
                     JScrollPane scroll = new JScrollPane(panel);
@@ -369,7 +357,6 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
 
                     CartesianPanelSignal panel = new CartesianPanelSignal();
                     panel.setAlignmentX(Component.LEFT_ALIGNMENT);
-                    //panel.setAxes("TI", 0, 6, Color.GRAY, signalFile);
                     panel.setAxes(nameSignals.get(6), minValueSignals.get(6), maxValueSignals.get(6), numDivisionSignals.get(6), Color.GRAY, signalFile);
                     panel.setBackground(Color.white);
                     JScrollPane scroll = new JScrollPane(panel);
@@ -395,7 +382,6 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
 
                     CartesianPanelSignal panel = new CartesianPanelSignal();
                     panel.setAlignmentX(Component.LEFT_ALIGNMENT);
-                    //panel.setAxes("TE", 0, 12, Color.CYAN, signalFile);
                     panel.setAxes(nameSignals.get(7), minValueSignals.get(7), maxValueSignals.get(7), numDivisionSignals.get(7), Color.CYAN, signalFile);
                     panel.setBackground(Color.white);
                     JScrollPane scroll = new JScrollPane(panel);
@@ -421,7 +407,6 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
 
                     CartesianPanelSignal panel = new CartesianPanelSignal();
                     panel.setAlignmentX(Component.LEFT_ALIGNMENT);
-                    //panel.setAxes("HR", 33, 215, Color.RED, signalFile);
                     panel.setAxes(nameSignals.get(8), minValueSignals.get(8), maxValueSignals.get(8), numDivisionSignals.get(8), Color.RED, signalFile);
                     panel.setBackground(Color.white);
                     JScrollPane scroll = new JScrollPane(panel);
@@ -447,7 +432,6 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
 
                     CartesianPanelSignal panel = new CartesianPanelSignal();
                     panel.setAlignmentX(Component.LEFT_ALIGNMENT);
-                    //panel.setAxes("VO2", 0, 6411, Color.BLUE, signalFile);
                     panel.setAxes(nameSignals.get(9), minValueSignals.get(9), maxValueSignals.get(9), numDivisionSignals.get(9), Color.BLUE, signalFile);
                     panel.setBackground(Color.white);
                     JScrollPane scroll = new JScrollPane(panel);

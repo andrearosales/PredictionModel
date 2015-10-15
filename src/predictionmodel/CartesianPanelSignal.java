@@ -15,7 +15,6 @@ import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.io.BufferedReader;
@@ -38,12 +37,12 @@ class CartesianPanelSignal extends JPanel implements ActionListener {
     // x-axis coord constants
     public static final int X_AXIS_FIRST_X_COORD = 50;
     public int X_AXIS_SECOND_X_COORD = 400;
-    public static int X_AXIS_Y_COORD; //It was 400
+    public static int X_AXIS_Y_COORD; //Set in the configuration file
 
     // y-axis coord constants
     public static final int Y_AXIS_DATA_Y_COORD = 15;
     public static final int Y_AXIS_FIRST_Y_COORD = 30;
-    public static int Y_AXIS_SECOND_Y_COORD; //It was 400
+    public static int Y_AXIS_SECOND_Y_COORD; //Set in the configuration file
     public static final int Y_AXIS_X_COORD = 50;
     public static final int Y_AXIS_HEIGH_COORD = 25;
 
@@ -68,15 +67,13 @@ class CartesianPanelSignal extends JPanel implements ActionListener {
     private String fileName;
     private double counter;
     private final int xCoordNumbers = 15;
-    private static int yCoordNumbers; //It was 10
+    private static int yCoordNumbers; //Set in the configuration file
     private int yMinimum;
     private int yMaximum;
     private int xLength;
     private int column;
     private int fontSize;
     private Color titleColor;
-    private long timeStamp;
-    private File file;
 
     /**
      * Method that allows the initialization of the specific data for each
@@ -85,6 +82,7 @@ class CartesianPanelSignal extends JPanel implements ActionListener {
      * @param data Title of the signal.
      * @param minimum Minimum value the signal can take.
      * @param maximum Maximum value the signal can take.
+     * @param numDivisions Number of divisions along the y axis.
      * @param color Specified color for displaying the signal.
      * @param signalFile Name of the file that contain the heart rate and oxygen
      * consumption measured values.
@@ -96,8 +94,6 @@ class CartesianPanelSignal extends JPanel implements ActionListener {
                 / xCoordNumbers;
         counter = 0;
         listPoints = new ArrayList<>();
-        //Point2D.Double origin = new Point2D.Double(counter, 0);
-        //listPoints.add(origin);
         listTimes = new ArrayList<>();
         counter++;
         dataY = data;
@@ -105,8 +101,6 @@ class CartesianPanelSignal extends JPanel implements ActionListener {
         yMaximum = maximum;
         titleColor = color;
         fileName = signalFile;
-        file = new File(fileName);
-        timeStamp = file.lastModified();
         readFile();
     }
 
@@ -126,7 +120,6 @@ class CartesianPanelSignal extends JPanel implements ActionListener {
         listPoints.add(origin);
         listTimes.add(0.0);
         counter++;
-        int counterRow = 0;
         try {
             br = new BufferedReader(new FileReader(csvFile));
             line = br.readLine();
@@ -140,17 +133,6 @@ class CartesianPanelSignal extends JPanel implements ActionListener {
                     count++;
                 }
             }
-            //update each second
-            /*while ((line = br.readLine()) != null && counterRow<=CartesianPanel.predictionStep) {
-             String[] values = line.split(cvsSplitBy);
-             Double yValue;
-             yValue = Double.valueOf(values[column]);
-             Point2D.Double point = new Point2D.Double(counter, yValue);
-             listPoints.add(point);
-             counter++;
-             counterRow++;
-             }*/
-            //update each step
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(cvsSplitBy);
                 Double yValue;
@@ -331,44 +313,53 @@ class CartesianPanelSignal extends JPanel implements ActionListener {
         }
 
         Stroke stroke = new BasicStroke(2f);
-        float[] dashingPattern1 = {2f, 2f};
-        Stroke stroke1 = new BasicStroke(0.5f, BasicStroke.CAP_BUTT,
-                BasicStroke.JOIN_MITER, 1.0f, dashingPattern1, 2.0f);
         ArrayList<Double> listPointsDraw = new ArrayList<>();
 
-        //for (int i = 0; i < CartesianPanel.predictionStep; i++) {
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < CartesianPanel.predictionStep; i++) {
+            Double higher = 0.0;
             for (int j = 0; j < listTimes.size(); j++) {
                 if ((listTimes.get(j) >= (durationPrediction * i)) && (listTimes.get(j) < (durationPrediction * (i + 1)))) {
                     listPointsDraw.add(listPoints.get(j).y);
                 }
+                if(listTimes.get(j) <= (durationPrediction * (i + 1)))
+                    higher = listPoints.get(j).y;
             }
-
             float subDivision = xLength / listPointsDraw.size();
-            int counterSubdivision = 0;
             for (int k = 0; k < listPointsDraw.size() - 1; k++) {
                 g2.setStroke(stroke);
                 g2.setColor(titleColor);
                 Point2D.Double initial;
                 Point2D.Double end;
-
                 if (yMaximum > yCoordNumbers) {
-                    initial = new Point2D.Double(X_AXIS_FIRST_X_COORD + (i * xLength) + (counterSubdivision * subDivision),
+                    initial = new Point2D.Double(X_AXIS_FIRST_X_COORD + (i * xLength) + (k * subDivision),
                             Y_AXIS_SECOND_Y_COORD - ((listPointsDraw.get(k) * yCoordNumbers / yMaximum) * yLength));
-                    end = new Point2D.Double(X_AXIS_FIRST_X_COORD + (i * xLength) + ((counterSubdivision + 1) * subDivision),
+                    end = new Point2D.Double(X_AXIS_FIRST_X_COORD + (i * xLength) + ((k + 1) * subDivision),
                             Y_AXIS_SECOND_Y_COORD - ((listPointsDraw.get(k + 1) * yCoordNumbers / yMaximum) * yLength));
                 } else {
-                    initial = new Point2D.Double(X_AXIS_FIRST_X_COORD + (i * xLength) + (counterSubdivision * subDivision),
+                    initial = new Point2D.Double(X_AXIS_FIRST_X_COORD + (i * xLength) + (k * subDivision),
                             Y_AXIS_SECOND_Y_COORD - (listPointsDraw.get(k) * yLength));
-                    end = new Point2D.Double(X_AXIS_FIRST_X_COORD + (i * xLength) + ((counterSubdivision + 1) * subDivision),
+                    end = new Point2D.Double(X_AXIS_FIRST_X_COORD + (i * xLength) + ((k + 1) * subDivision),
                             Y_AXIS_SECOND_Y_COORD - (listPointsDraw.get(k + 1) * yLength));
                 }
-
                 g2.draw(new Line2D.Double(initial, end));
-                g2.setColor(Color.BLACK);
-                g2.setStroke(stroke1);
-                counterSubdivision++;
             }
+
+            Point2D.Double initial;
+            Point2D.Double end;
+
+            if (yMaximum > yCoordNumbers) {
+                initial = new Point2D.Double(X_AXIS_FIRST_X_COORD + (i * xLength) + ((listPointsDraw.size()-1) * subDivision),
+                        Y_AXIS_SECOND_Y_COORD - ((listPointsDraw.get(listPointsDraw.size()-1) * yCoordNumbers / yMaximum) * yLength));
+                end = new Point2D.Double(X_AXIS_FIRST_X_COORD + ((i+1) * xLength),
+                        Y_AXIS_SECOND_Y_COORD - ((higher * yCoordNumbers / yMaximum) * yLength));
+            } else {
+                initial = new Point2D.Double(X_AXIS_FIRST_X_COORD + (i * xLength) + ((listPointsDraw.size()-1) * subDivision),
+                        Y_AXIS_SECOND_Y_COORD - (listPointsDraw.get(listPointsDraw.size()-1) * yLength));
+                end = new Point2D.Double(X_AXIS_FIRST_X_COORD + ((i+1) * xLength),
+                        Y_AXIS_SECOND_Y_COORD - (higher * yLength));
+            }
+
+            g2.draw(new Line2D.Double(initial, end));
             listPointsDraw.clear();
         }
 
@@ -385,13 +376,6 @@ class CartesianPanelSignal extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent ae) {
         if (ae.getSource() == timer) {
-            /*long newTimeStamp = file.lastModified();
-             if (timeStamp != newTimeStamp) {
-             timeStamp = newTimeStamp;
-             readFile();
-             revalidate();
-             repaint();
-             }*/
             readFile();
             revalidate();
             repaint();
@@ -405,7 +389,6 @@ class CartesianPanelSignal extends JPanel implements ActionListener {
      */
     @Override
     public Dimension getPreferredSize() {
-        //return new Dimension((X_AXIS_FIRST_X_COORD * 2) + (listPoints.size() * xLength), Y_AXIS_SECOND_Y_COORD + Y_AXIS_X_COORD);
         return new Dimension((X_AXIS_FIRST_X_COORD * 2) + (CartesianPanel.predictionStep * xLength) + 10, Y_AXIS_SECOND_Y_COORD);
     }
 }

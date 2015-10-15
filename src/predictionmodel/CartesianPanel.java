@@ -118,7 +118,7 @@ class CartesianPanel extends JPanel implements ActionListener {
 
         try {
             br = new BufferedReader(new FileReader(csvFile));
-            line = br.readLine();
+            br.readLine();
             columnAVG = 2;
             Double min = 0.0;
             Double max = 0.0;
@@ -168,8 +168,8 @@ class CartesianPanel extends JPanel implements ActionListener {
      * Method that prints the stored points so far. Used for debugging purposes.
      */
     public void printPoints() {
-        for (int i = 0; i < listPoints.size(); i++) {
-            System.out.println("x: " + listPoints.get(i).x + " y: " + listPoints.get(i).y);
+        for (Point2D.Double listPoint : listPoints) {
+            System.out.println("x: " + listPoint.x + " y: " + listPoint.y);
         }
     }
 

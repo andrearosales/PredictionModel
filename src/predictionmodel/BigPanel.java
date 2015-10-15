@@ -23,9 +23,9 @@ public class BigPanel extends JPanel{
      * Initial width of each plot.
      */
     public static int X_AXIS_AMOUNT = 100;
-    private static int xLength = 23;
-    private static int xCoordNumbers = 23;
-    private int titleAmount;
+    private static final int xLength = 23;
+    private static final int xCoordNumbers = 23;
+    private final int titleAmount;
 
     /**
      * Constructor of the class that initializes the values that are needed to
