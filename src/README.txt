@@ -29,20 +29,10 @@ In order to run the project it is necessary to:
 	* Visualization/src/predictionmodel
 4. Refresh the project
 - Right click -> Refresh
-5. Copy the signals files and the MAE output file into the root project directory.
-- Physiological signals file: The file that contains the measured signals before applying normalization, sampling or windowing.
+5. Copy the signals file, the MAE output file and the parameter configuration file into the root project directory.
+- Physiological signals file: The original file that contains the measured signals before applying normalization, sampling or windowing.
 - MAE file: The output file once the compute_mae.py script has run.
-6. Specify the command line parameter
-- Right click -> Properties -> Run/Debug Settings -> New -> Select Java Application
-- Write in the name field: Java Application
-- In the Main option select the main class: predictionmodel.PredictionModel
-- In the Arguments option -> Program arguments: Write the five necessary command line parameters all divided by a white space
-	* Predicted signal (HR_next, HR_peak, VO2_next or VO2_peak)
-	* Approach that was used for the prediction (Multiple-test or Single-test)
-	* Technique that was used for the prediction (ANN or SVM)
-	* Measurement of error used in the prediction (MAE or RMSE)
-	* Name of the file that contains the physiological signals measurements.
-6. Apply the changes
+- Parameter configuration file: Configuration file that contains the information for setting the visualization.
 7. Run the project
 - Right click -> Run As -> 2 Java Application
 
