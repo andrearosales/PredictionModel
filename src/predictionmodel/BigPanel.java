@@ -13,7 +13,8 @@ import javax.swing.JPanel;
  *
  * @author aRosales
  */
-public class BigPanel extends JPanel{
+public class BigPanel extends JPanel {
+
     /**
      * Specific height of each plot.
      */

@@ -88,6 +88,7 @@ class CartesianPanelSignal extends JPanel implements ActionListener {
      * @param data Title of the signal.
      * @param minimum Minimum value the signal can take.
      * @param maximum Maximum value the signal can take.
+     * @param units Measurement unit of the physiological signal.
      * @param numDivisions Number of divisions along the y axis.
      * @param color Specified color for displaying the signal.
      * @param signalFile Name of the file that contain the heart rate and oxygen

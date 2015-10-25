@@ -37,7 +37,7 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
     private ArrayList<Integer> maxValueSignals;
     private ArrayList<Integer> numDivisionSignals;
     private String[] defaultSignals;
-    private BigPanel bigPanel;
+    private final BigPanel bigPanel;
     private JPanel containerChecks;
     private JCheckBox FIO2;
     private JCheckBox FEO2;
@@ -80,21 +80,21 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
     CartesianFrameSignal(String signalFile) {
         this.signalFile = signalFile;
         //setSize(1000, 670);
-        
+
         String configurationFile = "Parameter_Configuration.txt";
         BufferedReader br = null;
         String line;
         String txtSplitBy = " ";
-        
+
         nameSignals = new ArrayList<>();
         minValueSignals = new ArrayList<>();
         maxValueSignals = new ArrayList<>();
         numDivisionSignals = new ArrayList<>();
         unitsSignals = new ArrayList<>();
-        
+
         try {
             br = new BufferedReader(new FileReader(configurationFile));
-            for(int i=0;i<15;i++){
+            for (int i = 0; i < 15; i++) {
                 br.readLine();
             }
             line = br.readLine();
@@ -103,7 +103,7 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
             height = Integer.valueOf(window_val[1]);
             setSize(width, height); //Read the parameters for the window size
             br.readLine(); //Read the signal title
-            for(int i=0; i<numberSignals;i++){
+            for (int i = 0; i < numberSignals; i++) {
                 line = br.readLine();
                 String[] values = line.split(txtSplitBy);
                 nameSignals.add(values[0]);
@@ -127,7 +127,7 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
             br.readLine(); //Read the x axis title title
             line = br.readLine(); //Read the x axis information
             xAxis = line.split(txtSplitBy); //As a vector if later on the min/sec configuration is implemented.
-            
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -141,22 +141,22 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
                 }
             }
         }
-        
+
         initializeOptions();
         setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 
         //Adding the general title
         JLabel labelTitle = new JLabel();
-        labelTitle.setFont(new Font ("Times", Font.BOLD, font_size_title));
+        labelTitle.setFont(new Font("Times", Font.BOLD, font_size_title));
         labelTitle.setText("PHYSIOLOGICAL SIGNALS MONITORING");
         labelTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
         add(labelTitle);
 
         CartesianPanelSignal.X_AXIS_Y_COORD = yCoordinate;
-        CartesianPanelSignal.Y_AXIS_SECOND_Y_COORD = yCoordinate;     
+        CartesianPanelSignal.Y_AXIS_SECOND_Y_COORD = yCoordinate;
         CartesianPanelSignal.xAxis = xAxis[0];
         CartesianPanelSignal.durationPrediction = durationStep;
-        
+
         //Adding the greater container
         bigPanel = new BigPanel(labelTitle.getHeight());
         BigPanel.Y_AXIS_AMOUNT = heightPlot;
@@ -165,30 +165,31 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
         JScrollPane bigScrollPanel = new JScrollPane(bigPanel);
         add(bigScrollPanel);
         add(containerChecks);
-        
+
         //Default selection
-        for(int i = 0;i<numberWindows;i++){
+        for (int i = 0; i < numberWindows; i++) {
             String signal = defaultSignals[i];
-            if(signal.contains("FIO2"))
+            if (signal.contains("FIO2")) {
                 FIO2.doClick();
-            else if(signal.contains("FEO2"))
+            } else if (signal.contains("FEO2")) {
                 FEO2.doClick();
-            else if(signal.contains("FECO2"))
+            } else if (signal.contains("FECO2")) {
                 FECO2.doClick();
-            else if(signal.contains("FETCO2"))
+            } else if (signal.contains("FETCO2")) {
                 FETCO2.doClick();
-            else if(signal.contains("FETO2"))
+            } else if (signal.contains("FETO2")) {
                 FETO2.doClick();
-            else if(signal.contains("VE"))
+            } else if (signal.contains("VE")) {
                 VE.doClick();
-            else if(signal.contains("TI"))
+            } else if (signal.contains("TI")) {
                 TI.doClick();
-            else if(signal.contains("TE"))
+            } else if (signal.contains("TE")) {
                 TE.doClick();
-            else if(signal.contains("HR"))
+            } else if (signal.contains("HR")) {
                 HR.doClick();
-            else 
+            } else {
                 VO2.doClick();
+            }
         }
     }
 
@@ -211,7 +212,7 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
                     contFIO2.setLayout(new BoxLayout(contFIO2, BoxLayout.Y_AXIS));
 
                     JLabel title = new JLabel();
-                    title.setFont(new Font ("Times", Font.BOLD, font_size_labels));
+                    title.setFont(new Font("Times", Font.BOLD, font_size_labels));
                     title.setAlignmentX(Component.CENTER_ALIGNMENT);
                     title.setText("FRACTION OF INSPIRED OXYGEN (FIO2)");
                     contFIO2.add(title);
@@ -236,7 +237,7 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
                     contFEO2.setLayout(new BoxLayout(contFEO2, BoxLayout.Y_AXIS));
 
                     JLabel title = new JLabel();
-                    title.setFont(new Font ("Times", Font.BOLD, font_size_labels));
+                    title.setFont(new Font("Times", Font.BOLD, font_size_labels));
                     title.setAlignmentX(Component.CENTER_ALIGNMENT);
                     title.setText("FRACTION OF EXPIRED OXYGEN (FEO2)");
                     contFEO2.add(title);
@@ -261,7 +262,7 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
                     contFECO2.setLayout(new BoxLayout(contFECO2, BoxLayout.Y_AXIS));
 
                     JLabel title = new JLabel();
-                    title.setFont(new Font ("Times", Font.BOLD, font_size_labels));
+                    title.setFont(new Font("Times", Font.BOLD, font_size_labels));
                     title.setAlignmentX(Component.CENTER_ALIGNMENT);
                     title.setText("FRACTION OF EXPIRED CARBON DIOXIDE (FECO2)");
                     contFECO2.add(title);
@@ -286,7 +287,7 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
                     contFETCO2.setLayout(new BoxLayout(contFETCO2, BoxLayout.Y_AXIS));
 
                     JLabel title = new JLabel();
-                    title.setFont(new Font ("Times", Font.BOLD, font_size_labels));
+                    title.setFont(new Font("Times", Font.BOLD, font_size_labels));
                     title.setAlignmentX(Component.CENTER_ALIGNMENT);
                     title.setText("FRACTION OF END-TIDAL CARBON DIOXIDE (FETCO2)");
                     contFETCO2.add(title);
@@ -311,7 +312,7 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
                     contFETO2.setLayout(new BoxLayout(contFETO2, BoxLayout.Y_AXIS));
 
                     JLabel title = new JLabel();
-                    title.setFont(new Font ("Times", Font.BOLD, font_size_labels));
+                    title.setFont(new Font("Times", Font.BOLD, font_size_labels));
                     title.setAlignmentX(Component.CENTER_ALIGNMENT);
                     title.setText("FRACTION OF END-TIDAL OXYGEN (FETO2)");
                     contFETO2.add(title);
@@ -336,7 +337,7 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
                     contVE.setLayout(new BoxLayout(contVE, BoxLayout.Y_AXIS));
 
                     JLabel title = new JLabel();
-                    title.setFont(new Font ("Times", Font.BOLD, font_size_labels));
+                    title.setFont(new Font("Times", Font.BOLD, font_size_labels));
                     title.setAlignmentX(Component.CENTER_ALIGNMENT);
                     title.setText("VENTILATION (VE)");
                     contVE.add(title);
@@ -361,7 +362,7 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
                     contTI.setLayout(new BoxLayout(contTI, BoxLayout.Y_AXIS));
 
                     JLabel title = new JLabel();
-                    title.setFont(new Font ("Times", Font.BOLD, font_size_labels));
+                    title.setFont(new Font("Times", Font.BOLD, font_size_labels));
                     title.setAlignmentX(Component.CENTER_ALIGNMENT);
                     title.setText("INSPIRATORY TIME (IT)");
                     contTI.add(title);
@@ -386,7 +387,7 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
                     contTE.setLayout(new BoxLayout(contTE, BoxLayout.Y_AXIS));
 
                     JLabel title = new JLabel();
-                    title.setFont(new Font ("Times", Font.BOLD, font_size_labels));
+                    title.setFont(new Font("Times", Font.BOLD, font_size_labels));
                     title.setAlignmentX(Component.CENTER_ALIGNMENT);
                     title.setText("EXPIRATORY TIME (ET)");
                     contTE.add(title);
@@ -411,7 +412,7 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
                     contHR.setLayout(new BoxLayout(contHR, BoxLayout.Y_AXIS));
 
                     JLabel title = new JLabel();
-                    title.setFont(new Font ("Times", Font.BOLD, font_size_labels));
+                    title.setFont(new Font("Times", Font.BOLD, font_size_labels));
                     title.setAlignmentX(Component.CENTER_ALIGNMENT);
                     title.setText("HEART RATE (HR)");
                     contHR.add(title);
@@ -436,7 +437,7 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
                     contVO2.setLayout(new BoxLayout(contVO2, BoxLayout.Y_AXIS));
 
                     JLabel title = new JLabel();
-                    title.setFont(new Font ("Times", Font.BOLD, font_size_labels));
+                    title.setFont(new Font("Times", Font.BOLD, font_size_labels));
                     title.setAlignmentX(Component.CENTER_ALIGNMENT);
                     title.setText("OXYGEN CONSUMPTION (VO2)");
                     contVO2.add(title);
@@ -462,34 +463,34 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
     public void initializeOptions() {
 
         FIO2 = new JCheckBox("FRACTION OF INSPIRED OXYGEN (FIO2)");
-        FIO2.setFont(new Font ("Times", Font.PLAIN, font_size_labels));
+        FIO2.setFont(new Font("Times", Font.PLAIN, font_size_labels));
         FIO2.addItemListener(this);
         FEO2 = new JCheckBox("FRACTION OF EXPIRED OXYGEN (FEO2)");
-        FEO2.setFont(new Font ("Times", Font.PLAIN, font_size_labels));
+        FEO2.setFont(new Font("Times", Font.PLAIN, font_size_labels));
         FEO2.addItemListener(this);
         FECO2 = new JCheckBox("FRACTION OF EXPIRED CARBON DIOXIDE (FECO2)");
-        FECO2.setFont(new Font ("Times", Font.PLAIN, font_size_labels));
+        FECO2.setFont(new Font("Times", Font.PLAIN, font_size_labels));
         FECO2.addItemListener(this);
         FETCO2 = new JCheckBox("FRACTION OF END-TIDAL CARBON DIOXIDE (FETCO2)");
-        FETCO2.setFont(new Font ("Times", Font.PLAIN, font_size_labels));
+        FETCO2.setFont(new Font("Times", Font.PLAIN, font_size_labels));
         FETCO2.addItemListener(this);
         FETO2 = new JCheckBox("FRACTION OF END-TIDAL OXYGEN (FETO2)");
-        FETO2.setFont(new Font ("Times", Font.PLAIN, font_size_labels));
+        FETO2.setFont(new Font("Times", Font.PLAIN, font_size_labels));
         FETO2.addItemListener(this);
         VE = new JCheckBox("VENTILATION (VE)");
-        VE.setFont(new Font ("Times", Font.PLAIN, font_size_labels));
+        VE.setFont(new Font("Times", Font.PLAIN, font_size_labels));
         VE.addItemListener(this);
         TI = new JCheckBox("INSPIRATORY TIME (IT)");
-        TI.setFont(new Font ("Times", Font.PLAIN, font_size_labels));
+        TI.setFont(new Font("Times", Font.PLAIN, font_size_labels));
         TI.addItemListener(this);
         TE = new JCheckBox("EXPIRATORY TIME (ET)");
-        TE.setFont(new Font ("Times", Font.PLAIN, font_size_labels));
+        TE.setFont(new Font("Times", Font.PLAIN, font_size_labels));
         TE.addItemListener(this);
         HR = new JCheckBox("HEART RATE (HR)");
-        HR.setFont(new Font ("Times", Font.PLAIN, font_size_labels));
+        HR.setFont(new Font("Times", Font.PLAIN, font_size_labels));
         HR.addItemListener(this);
         VO2 = new JCheckBox("OXYGEN CONSUMPTION (VO2)");
-        VO2.setFont(new Font ("Times", Font.PLAIN, font_size_labels));
+        VO2.setFont(new Font("Times", Font.PLAIN, font_size_labels));
         VO2.addItemListener(this);
 
         containerChecks = new JPanel();

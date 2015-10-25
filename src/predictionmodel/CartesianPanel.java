@@ -58,11 +58,11 @@ class CartesianPanel extends JPanel implements ActionListener {
     // distance of coordinate strings from axis
     public static final int AXIS_STRING_DISTANCE_Y = 55; //Needs to be changed if the letter size changes
     public static final int AXIS_STRING_DISTANCE_X = 30;
-    
+
     // additional information for the scrolling
     public static final int SCROLL_SPACE_HORIZONTAL = 70;
     public static final int SCROLL_SPACE_VERTICAL = 40;
-    
+
     public static int predictionStep;
 
     private ArrayList<Point2D.Double> listPoints;
@@ -90,6 +90,7 @@ class CartesianPanel extends JPanel implements ActionListener {
      *
      * @param color Specified color for displaying the signal.
      * @param signal Predicted signal.
+     * @param units Measurement unit of the prediction results.
      */
     public void setAxes(Color color, String signal, String units) {
         xLength = (X_AXIS_SECOND_X_COORD - X_AXIS_FIRST_X_COORD)
@@ -227,14 +228,14 @@ class CartesianPanel extends JPanel implements ActionListener {
         g2.drawString("P. STEP", X_AXIS_FIRST_X_COORD + ((listPoints.size() + 1) * xLength),
                 X_AXIS_Y_COORD + AXIS_STRING_DISTANCE_X);
         /*if (predictedSignal.contains("HR")) {
-            g2.drawString(predictedSignal + " (bpm)", Y_AXIS_X_COORD - AXIS_STRING_DISTANCE_Y,
-                    Y_AXIS_DATA_Y_COORD);
-        } else {
-            g2.drawString(predictedSignal + " (l/min)", Y_AXIS_X_COORD - AXIS_STRING_DISTANCE_Y,
-                    Y_AXIS_DATA_Y_COORD);
-        }*/
-        g2.drawString(predictedSignal + " (" + units +")", Y_AXIS_X_COORD - AXIS_STRING_DISTANCE_Y,
-                    Y_AXIS_DATA_Y_COORD);        
+         g2.drawString(predictedSignal + " (bpm)", Y_AXIS_X_COORD - AXIS_STRING_DISTANCE_Y,
+         Y_AXIS_DATA_Y_COORD);
+         } else {
+         g2.drawString(predictedSignal + " (l/min)", Y_AXIS_X_COORD - AXIS_STRING_DISTANCE_Y,
+         Y_AXIS_DATA_Y_COORD);
+         }*/
+        g2.drawString(predictedSignal + " (" + units + ")", Y_AXIS_X_COORD - AXIS_STRING_DISTANCE_Y,
+                Y_AXIS_DATA_Y_COORD);
         g2.drawString("(0, 0)", X_AXIS_FIRST_X_COORD - AXIS_STRING_DISTANCE_Y,
                 Y_AXIS_SECOND_Y_COORD + AXIS_STRING_DISTANCE_X);
 
@@ -413,29 +414,29 @@ class CartesianPanel extends JPanel implements ActionListener {
         g2.setColor(titleColor);
         if (yMaximum > yCoordNumbers) {
             g2.setColor(Color.BLUE);
-            g2.draw(new Ellipse2D.Double(X_AXIS_FIRST_X_COORD + (listErrorPlus.get(listErrorPlus.size()-1).x * xLength) - (point_lenght / 2),
-                    Y_AXIS_SECOND_Y_COORD - ((listErrorPlus.get(listErrorPlus.size()-1).y * yCoordNumbers / yMaximum) * yLength) - (point_lenght / 2),
+            g2.draw(new Ellipse2D.Double(X_AXIS_FIRST_X_COORD + (listErrorPlus.get(listErrorPlus.size() - 1).x * xLength) - (point_lenght / 2),
+                    Y_AXIS_SECOND_Y_COORD - ((listErrorPlus.get(listErrorPlus.size() - 1).y * yCoordNumbers / yMaximum) * yLength) - (point_lenght / 2),
                     point_lenght, point_lenght));
             g2.setColor(titleColor);
-            g2.draw(new Ellipse2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(listPoints.size()-1).x * xLength) - (point_lenght / 2),
-                    Y_AXIS_SECOND_Y_COORD - ((listPoints.get(listPoints.size()-1).y * yCoordNumbers / yMaximum) * yLength) - (point_lenght / 2),
+            g2.draw(new Ellipse2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(listPoints.size() - 1).x * xLength) - (point_lenght / 2),
+                    Y_AXIS_SECOND_Y_COORD - ((listPoints.get(listPoints.size() - 1).y * yCoordNumbers / yMaximum) * yLength) - (point_lenght / 2),
                     point_lenght, point_lenght));
             g2.setColor(Color.GRAY);
-            g2.draw(new Ellipse2D.Double(X_AXIS_FIRST_X_COORD + (listErrorMinus.get(listErrorMinus.size()-1).x * xLength) - (point_lenght / 2),
-                    Y_AXIS_SECOND_Y_COORD - ((listErrorMinus.get(listErrorMinus.size()-1).y * yCoordNumbers / yMaximum) * yLength) - (point_lenght / 2),
+            g2.draw(new Ellipse2D.Double(X_AXIS_FIRST_X_COORD + (listErrorMinus.get(listErrorMinus.size() - 1).x * xLength) - (point_lenght / 2),
+                    Y_AXIS_SECOND_Y_COORD - ((listErrorMinus.get(listErrorMinus.size() - 1).y * yCoordNumbers / yMaximum) * yLength) - (point_lenght / 2),
                     point_lenght, point_lenght));
         } else {
             g2.setColor(Color.BLUE);
-            g2.draw(new Ellipse2D.Double(X_AXIS_FIRST_X_COORD + (listErrorPlus.get(listErrorPlus.size()-1).x * xLength) - (point_lenght / 2),
-                    Y_AXIS_SECOND_Y_COORD - (listErrorPlus.get(listErrorPlus.size()-1).y * yLength) - (point_lenght / 2),
+            g2.draw(new Ellipse2D.Double(X_AXIS_FIRST_X_COORD + (listErrorPlus.get(listErrorPlus.size() - 1).x * xLength) - (point_lenght / 2),
+                    Y_AXIS_SECOND_Y_COORD - (listErrorPlus.get(listErrorPlus.size() - 1).y * yLength) - (point_lenght / 2),
                     point_lenght, point_lenght));
             g2.setColor(titleColor);
-            g2.draw(new Ellipse2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(listPoints.size()-1).x * xLength) - (point_lenght / 2),
-                    Y_AXIS_SECOND_Y_COORD - (listPoints.get(listPoints.size()-1).y * yLength) - (point_lenght / 2),
+            g2.draw(new Ellipse2D.Double(X_AXIS_FIRST_X_COORD + (listPoints.get(listPoints.size() - 1).x * xLength) - (point_lenght / 2),
+                    Y_AXIS_SECOND_Y_COORD - (listPoints.get(listPoints.size() - 1).y * yLength) - (point_lenght / 2),
                     point_lenght, point_lenght));
             g2.setColor(Color.GRAY);
-            g2.draw(new Ellipse2D.Double(X_AXIS_FIRST_X_COORD + (listErrorMinus.get(listErrorMinus.size()-1).x * xLength) - (point_lenght / 2),
-                    Y_AXIS_SECOND_Y_COORD - (listErrorMinus.get(listErrorMinus.size()-1).y * yLength) - (point_lenght / 2),
+            g2.draw(new Ellipse2D.Double(X_AXIS_FIRST_X_COORD + (listErrorMinus.get(listErrorMinus.size() - 1).x * xLength) - (point_lenght / 2),
+                    Y_AXIS_SECOND_Y_COORD - (listErrorMinus.get(listErrorMinus.size() - 1).y * yLength) - (point_lenght / 2),
                     point_lenght, point_lenght));
         }
         timer.start();
