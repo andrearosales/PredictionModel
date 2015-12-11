@@ -24,7 +24,7 @@ VE 0 234 l/min 5
 TI 0 6 sec 5
 TE 0 12 sec 5
 HR 33 215 bpm 5
-VO2 0 6411 ml/min 5
+VO2 0 6411 l/min 5
 Number_Windows Y_Coordinate Height_Plot
 2 200 270
 Default Signals
@@ -32,4 +32,4 @@ HR VO2
 Duration of the prediction step
 32
 X axis
-P. STEP
+P-STEP

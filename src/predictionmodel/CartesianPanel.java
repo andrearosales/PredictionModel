@@ -225,7 +225,7 @@ class CartesianPanel extends JPanel implements ActionListener {
                 X_AXIS_FIRST_X_COORD + ((listPoints.size() + 1) * xLength), X_AXIS_Y_COORD);
 
         // draw text "X" and draw text "Y"
-        g2.drawString("P. STEP", X_AXIS_FIRST_X_COORD + ((listPoints.size() + 1) * xLength),
+        g2.drawString("P-STEP", X_AXIS_FIRST_X_COORD + ((listPoints.size() + 1) * xLength),
                 X_AXIS_Y_COORD + AXIS_STRING_DISTANCE_X);
         /*if (predictedSignal.contains("HR")) {
          g2.drawString(predictedSignal + " (bpm)", Y_AXIS_X_COORD - AXIS_STRING_DISTANCE_Y,

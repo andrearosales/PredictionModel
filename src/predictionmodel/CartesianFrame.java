@@ -10,9 +10,11 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Font;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
+import javax.swing.SwingConstants;
 
 /**
  * Class that plots the results of the prediction.
@@ -83,6 +85,11 @@ class CartesianFrame extends JFrame {
         blank.setFont(new Font("Times", Font.PLAIN, font_size_labels));
         blank.setAlignmentX(Component.CENTER_ALIGNMENT);
         blank.setText(" ");
+        
+        JLabel blank2 = new JLabel();
+        blank2.setFont(new Font("Times", Font.PLAIN, font_size_labels));
+        blank2.setAlignmentX(Component.CENTER_ALIGNMENT);
+        blank2.setText(" ");
 
         /*JLabel plusMAE = new JLabel();
          plusMAE.setFont(new Font ("Times", Font.BOLD, font_size_labels));
@@ -101,11 +108,12 @@ class CartesianFrame extends JFrame {
          minusMAE.setAlignmentX(Component.CENTER_ALIGNMENT);
          minusMAE.setText(" .... " + signal + " - MAE");
          minusMAE.setForeground(Color.GRAY);*/
-        JLabel label = new JLabel();
-        label.setFont(new Font("Times", Font.PLAIN, font_size_labels));
-        label.setAlignmentX(Component.CENTER_ALIGNMENT);
-        label.setText(signal + " (___);  " + signal + " + MAE (----);  " + signal + " - MAE (....)");
-
+        
+        JLabel labelLine = new JLabel("  " + signal + ";  ----  " + signal + " + MAE;  ····  " + signal + " - MAE", new ImageIcon("line.png"),SwingConstants.CENTER);
+        labelLine.setFont(new Font("Times", Font.PLAIN, font_size_labels));
+        labelLine.setAlignmentX(Component.CENTER_ALIGNMENT);
+        //label.setText(signal + " (___);  " + signal + " + MAE (----);  " + signal + " - MAE (....)");
+        
         //add(predictedValue);
         add(predictionModel);
         //add(knowledgeBase);
@@ -113,7 +121,8 @@ class CartesianFrame extends JFrame {
         //add(plusMAE);
         //add(avg);
         //add(minusMAE);
-        add(label);
+        add(labelLine);
+        add(blank2);
     }
 
     /**

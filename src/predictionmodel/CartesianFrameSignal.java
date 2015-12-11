@@ -30,7 +30,7 @@ import javax.swing.JScrollPane;
  * @author aRosales
  */
 class CartesianFrameSignal extends JFrame implements ItemListener {
-
+    
     private ArrayList<String> nameSignals;
     private ArrayList<String> unitsSignals;
     private ArrayList<Integer> minValueSignals;
@@ -70,6 +70,8 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
     private int durationStep;
     private int width;
     private int height;
+    private float minVo2;
+    private float maxVo2;
 
     /**
      * Default constructor of the class that will initialize the main panels.
@@ -85,13 +87,13 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
         BufferedReader br = null;
         String line;
         String txtSplitBy = " ";
-
+        
         nameSignals = new ArrayList<>();
         minValueSignals = new ArrayList<>();
         maxValueSignals = new ArrayList<>();
         numDivisionSignals = new ArrayList<>();
         unitsSignals = new ArrayList<>();
-
+        
         try {
             br = new BufferedReader(new FileReader(configurationFile));
             for (int i = 0; i < 15; i++) {
@@ -107,8 +109,13 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
                 line = br.readLine();
                 String[] values = line.split(txtSplitBy);
                 nameSignals.add(values[0]);
-                minValueSignals.add(Integer.valueOf(values[1]));
-                maxValueSignals.add(Integer.valueOf(values[2]));
+                if (values[0].equals("VO2") && values[3].equals("l/min")) {
+                    minVo2 = Float.valueOf(values[1]);
+                    maxVo2 = Float.valueOf(values[2]);
+                } else {
+                    minValueSignals.add(Integer.valueOf(values[1]));
+                    maxValueSignals.add(Integer.valueOf(values[2]));
+                }
                 unitsSignals.add(values[3]);
                 numDivisionSignals.add(Integer.valueOf(values[4]));
             }
@@ -141,7 +148,7 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
                 }
             }
         }
-
+        
         initializeOptions();
         setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 
@@ -151,7 +158,7 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
         labelTitle.setText("PHYSIOLOGICAL SIGNALS MONITORING");
         labelTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
         add(labelTitle);
-
+        
         CartesianPanelSignal.X_AXIS_Y_COORD = yCoordinate;
         CartesianPanelSignal.Y_AXIS_SECOND_Y_COORD = yCoordinate;
         CartesianPanelSignal.xAxis = xAxis[0];
@@ -161,7 +168,7 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
         bigPanel = new BigPanel(labelTitle.getHeight());
         BigPanel.Y_AXIS_AMOUNT = heightPlot;
         bigPanel.setLayout(new BoxLayout(bigPanel, BoxLayout.Y_AXIS));
-
+        
         JScrollPane bigScrollPanel = new JScrollPane(bigPanel);
         add(bigScrollPanel);
         add(containerChecks);
@@ -200,7 +207,7 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
      */
     @Override
     public void itemStateChanged(ItemEvent e) {
-
+        
         Object source = e.getItemSelectable();
         if (source == FIO2) {
             if (e.getStateChange() == ItemEvent.DESELECTED) {
@@ -210,20 +217,20 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
                 if (contFIO2 == null) {
                     contFIO2 = new Container();
                     contFIO2.setLayout(new BoxLayout(contFIO2, BoxLayout.Y_AXIS));
-
+                    
                     JLabel title = new JLabel();
                     title.setFont(new Font("Times", Font.BOLD, font_size_labels));
                     title.setAlignmentX(Component.CENTER_ALIGNMENT);
                     title.setText("FRACTION OF INSPIRED OXYGEN (FIO2)");
                     contFIO2.add(title);
-
+                    
                     CartesianPanelSignal panel = new CartesianPanelSignal();
                     panel.setAlignmentX(Component.LEFT_ALIGNMENT);
                     panel.setAxes(nameSignals.get(0), minValueSignals.get(0), maxValueSignals.get(0), unitsSignals.get(0), numDivisionSignals.get(0), Color.BLACK, signalFile);
                     panel.setBackground(Color.white);
                     JScrollPane scroll = new JScrollPane(panel);
                     contFIO2.add(scroll);
-
+                    
                     bigPanel.add(contFIO2);
                 }
             }
@@ -235,20 +242,20 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
                 if (contFEO2 == null) {
                     contFEO2 = new Container();
                     contFEO2.setLayout(new BoxLayout(contFEO2, BoxLayout.Y_AXIS));
-
+                    
                     JLabel title = new JLabel();
                     title.setFont(new Font("Times", Font.BOLD, font_size_labels));
                     title.setAlignmentX(Component.CENTER_ALIGNMENT);
                     title.setText("FRACTION OF EXPIRED OXYGEN (FEO2)");
                     contFEO2.add(title);
-
+                    
                     CartesianPanelSignal panel = new CartesianPanelSignal();
                     panel.setAlignmentX(Component.LEFT_ALIGNMENT);
                     panel.setAxes(nameSignals.get(1), minValueSignals.get(1), maxValueSignals.get(1), unitsSignals.get(1), numDivisionSignals.get(1), Color.GRAY, signalFile);
                     panel.setBackground(Color.white);
                     JScrollPane scroll = new JScrollPane(panel);
                     contFEO2.add(scroll);
-
+                    
                     bigPanel.add(contFEO2);
                 }
             }
@@ -260,20 +267,20 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
                 if (contFECO2 == null) {
                     contFECO2 = new Container();
                     contFECO2.setLayout(new BoxLayout(contFECO2, BoxLayout.Y_AXIS));
-
+                    
                     JLabel title = new JLabel();
                     title.setFont(new Font("Times", Font.BOLD, font_size_labels));
                     title.setAlignmentX(Component.CENTER_ALIGNMENT);
                     title.setText("FRACTION OF EXPIRED CARBON DIOXIDE (FECO2)");
                     contFECO2.add(title);
-
+                    
                     CartesianPanelSignal panel = new CartesianPanelSignal();
                     panel.setAlignmentX(Component.LEFT_ALIGNMENT);
                     panel.setAxes(nameSignals.get(2), minValueSignals.get(2), maxValueSignals.get(2), unitsSignals.get(2), numDivisionSignals.get(2), Color.YELLOW, signalFile);
                     panel.setBackground(Color.white);
                     JScrollPane scroll = new JScrollPane(panel);
                     contFECO2.add(scroll);
-
+                    
                     bigPanel.add(contFECO2);
                 }
             }
@@ -285,20 +292,20 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
                 if (contFETCO2 == null) {
                     contFETCO2 = new Container();
                     contFETCO2.setLayout(new BoxLayout(contFETCO2, BoxLayout.Y_AXIS));
-
+                    
                     JLabel title = new JLabel();
                     title.setFont(new Font("Times", Font.BOLD, font_size_labels));
                     title.setAlignmentX(Component.CENTER_ALIGNMENT);
                     title.setText("FRACTION OF END-TIDAL CARBON DIOXIDE (FETCO2)");
                     contFETCO2.add(title);
-
+                    
                     CartesianPanelSignal panel = new CartesianPanelSignal();
                     panel.setAlignmentX(Component.LEFT_ALIGNMENT);
                     panel.setAxes(nameSignals.get(3), minValueSignals.get(3), maxValueSignals.get(3), unitsSignals.get(3), numDivisionSignals.get(3), Color.PINK, signalFile);
                     panel.setBackground(Color.white);
                     JScrollPane scroll = new JScrollPane(panel);
                     contFETCO2.add(scroll);
-
+                    
                     bigPanel.add(contFETCO2);
                 }
             }
@@ -310,20 +317,20 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
                 if (contFETO2 == null) {
                     contFETO2 = new Container();
                     contFETO2.setLayout(new BoxLayout(contFETO2, BoxLayout.Y_AXIS));
-
+                    
                     JLabel title = new JLabel();
                     title.setFont(new Font("Times", Font.BOLD, font_size_labels));
                     title.setAlignmentX(Component.CENTER_ALIGNMENT);
                     title.setText("FRACTION OF END-TIDAL OXYGEN (FETO2)");
                     contFETO2.add(title);
-
+                    
                     CartesianPanelSignal panel = new CartesianPanelSignal();
                     panel.setAlignmentX(Component.LEFT_ALIGNMENT);
                     panel.setAxes(nameSignals.get(4), minValueSignals.get(4), maxValueSignals.get(4), unitsSignals.get(4), numDivisionSignals.get(4), Color.ORANGE, signalFile);
                     panel.setBackground(Color.white);
                     JScrollPane scroll = new JScrollPane(panel);
                     contFETO2.add(scroll);
-
+                    
                     bigPanel.add(contFETO2);
                 }
             }
@@ -335,20 +342,20 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
                 if (contVE == null) {
                     contVE = new Container();
                     contVE.setLayout(new BoxLayout(contVE, BoxLayout.Y_AXIS));
-
+                    
                     JLabel title = new JLabel();
                     title.setFont(new Font("Times", Font.BOLD, font_size_labels));
                     title.setAlignmentX(Component.CENTER_ALIGNMENT);
                     title.setText("VENTILATION (VE)");
                     contVE.add(title);
-
+                    
                     CartesianPanelSignal panel = new CartesianPanelSignal();
                     panel.setAlignmentX(Component.LEFT_ALIGNMENT);
                     panel.setAxes(nameSignals.get(5), minValueSignals.get(5), maxValueSignals.get(5), unitsSignals.get(5), numDivisionSignals.get(5), Color.MAGENTA, signalFile);
                     panel.setBackground(Color.white);
                     JScrollPane scroll = new JScrollPane(panel);
                     contVE.add(scroll);
-
+                    
                     bigPanel.add(contVE);
                 }
             }
@@ -360,20 +367,20 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
                 if (contTI == null) {
                     contTI = new Container();
                     contTI.setLayout(new BoxLayout(contTI, BoxLayout.Y_AXIS));
-
+                    
                     JLabel title = new JLabel();
                     title.setFont(new Font("Times", Font.BOLD, font_size_labels));
                     title.setAlignmentX(Component.CENTER_ALIGNMENT);
                     title.setText("INSPIRATORY TIME (IT)");
                     contTI.add(title);
-
+                    
                     CartesianPanelSignal panel = new CartesianPanelSignal();
                     panel.setAlignmentX(Component.LEFT_ALIGNMENT);
                     panel.setAxes(nameSignals.get(6), minValueSignals.get(6), maxValueSignals.get(6), unitsSignals.get(6), numDivisionSignals.get(6), Color.GRAY, signalFile);
                     panel.setBackground(Color.white);
                     JScrollPane scroll = new JScrollPane(panel);
                     contTI.add(scroll);
-
+                    
                     bigPanel.add(contTI);
                 }
             }
@@ -385,20 +392,20 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
                 if (contTE == null) {
                     contTE = new Container();
                     contTE.setLayout(new BoxLayout(contTE, BoxLayout.Y_AXIS));
-
+                    
                     JLabel title = new JLabel();
                     title.setFont(new Font("Times", Font.BOLD, font_size_labels));
                     title.setAlignmentX(Component.CENTER_ALIGNMENT);
                     title.setText("EXPIRATORY TIME (ET)");
                     contTE.add(title);
-
+                    
                     CartesianPanelSignal panel = new CartesianPanelSignal();
                     panel.setAlignmentX(Component.LEFT_ALIGNMENT);
                     panel.setAxes(nameSignals.get(7), minValueSignals.get(7), maxValueSignals.get(7), unitsSignals.get(7), numDivisionSignals.get(7), Color.CYAN, signalFile);
                     panel.setBackground(Color.white);
                     JScrollPane scroll = new JScrollPane(panel);
                     contTE.add(scroll);
-
+                    
                     bigPanel.add(contTE);
                 }
             }
@@ -410,20 +417,20 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
                 if (contHR == null) {
                     contHR = new Container();
                     contHR.setLayout(new BoxLayout(contHR, BoxLayout.Y_AXIS));
-
+                    
                     JLabel title = new JLabel();
                     title.setFont(new Font("Times", Font.BOLD, font_size_labels));
                     title.setAlignmentX(Component.CENTER_ALIGNMENT);
                     title.setText("HEART RATE (HR)");
                     contHR.add(title);
-
+                    
                     CartesianPanelSignal panel = new CartesianPanelSignal();
                     panel.setAlignmentX(Component.LEFT_ALIGNMENT);
                     panel.setAxes(nameSignals.get(8), minValueSignals.get(8), maxValueSignals.get(8), unitsSignals.get(8), numDivisionSignals.get(8), Color.RED, signalFile);
                     panel.setBackground(Color.white);
                     JScrollPane scroll = new JScrollPane(panel);
                     contHR.add(scroll);
-
+                    
                     bigPanel.add(contHR);
                 }
             }
@@ -435,20 +442,25 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
                 if (contVO2 == null) {
                     contVO2 = new Container();
                     contVO2.setLayout(new BoxLayout(contVO2, BoxLayout.Y_AXIS));
-
+                    
                     JLabel title = new JLabel();
                     title.setFont(new Font("Times", Font.BOLD, font_size_labels));
                     title.setAlignmentX(Component.CENTER_ALIGNMENT);
                     title.setText("OXYGEN CONSUMPTION (VO2)");
                     contVO2.add(title);
-
+                    
                     CartesianPanelSignal panel = new CartesianPanelSignal();
                     panel.setAlignmentX(Component.LEFT_ALIGNMENT);
-                    panel.setAxes(nameSignals.get(9), minValueSignals.get(9), maxValueSignals.get(9), unitsSignals.get(9), numDivisionSignals.get(9), Color.BLUE, signalFile);
+                    if (unitsSignals.get(9).equals("ml/min")) {
+                        panel.setAxes(nameSignals.get(9), minValueSignals.get(9), maxValueSignals.get(9), unitsSignals.get(9), numDivisionSignals.get(9), Color.BLUE, signalFile);
+                    }
+                    else {
+                        panel.setAxes(nameSignals.get(9), minVo2, maxVo2, unitsSignals.get(9), numDivisionSignals.get(9), Color.BLUE, signalFile);
+                    }
                     panel.setBackground(Color.white);
                     JScrollPane scroll = new JScrollPane(panel);
                     contVO2.add(scroll);
-
+                    
                     bigPanel.add(contVO2);
                 }
             }
@@ -461,7 +473,7 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
      * Method that initializes the panel with all the possible signal options.
      */
     public void initializeOptions() {
-
+        
         FIO2 = new JCheckBox("FRACTION OF INSPIRED OXYGEN (FIO2)");
         FIO2.setFont(new Font("Times", Font.PLAIN, font_size_labels));
         FIO2.addItemListener(this);
@@ -492,7 +504,7 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
         VO2 = new JCheckBox("OXYGEN CONSUMPTION (VO2)");
         VO2.setFont(new Font("Times", Font.PLAIN, font_size_labels));
         VO2.addItemListener(this);
-
+        
         containerChecks = new JPanel();
         containerChecks.setLayout(new GridLayout(5, 2));
         containerChecks.add(HR);
@@ -505,7 +517,7 @@ class CartesianFrameSignal extends JFrame implements ItemListener {
         containerChecks.add(VE);
         containerChecks.add(TI);
         containerChecks.add(TE);
-
+        
     }
 
     /**
